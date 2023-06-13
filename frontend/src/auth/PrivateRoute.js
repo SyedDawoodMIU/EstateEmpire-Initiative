@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { Route, Redirect } from 'react-router-dom';
+import { Route, Navigate } from 'react-router-dom';
 import AuthContext from './AuthContext';
 
 const PrivateRoute = ({ component: Component, ...rest }) => {
@@ -12,7 +12,7 @@ const PrivateRoute = ({ component: Component, ...rest }) => {
         authenticated ? (
           <Component {...props} />
         ) : (
-          <Redirect to="/login" />
+          <Navigate to="/login" />
         )
       }
     />

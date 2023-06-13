@@ -1,10 +1,10 @@
 import React, { useState, useContext } from 'react';
-import { useHistory } from 'react-router-dom';
-import AuthContext from '../auth/AuthContext';
-import oauthService from '../auth/oauthService';
+import { useNavigate } from 'react-router-dom';
+import AuthContext from '../../auth/AuthContext';
+import OauthService from '../../auth/OauthService';
 
 const LoginPage = () => {
-  const history = useHistory();
+  const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -14,9 +14,9 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      const accessToken = await oauthService.login(username, password);
+      const accessToken = await OauthService.login(username, password);
       login(accessToken);
-      history.push('/dashboard'); // Redirect to the dashboard or any desired page upon successful login
+      navigate('/dashboard'); // Redirect to the dashboard or any desired page upon successful login
     } catch (error) {
       setError(error.message);
     }
