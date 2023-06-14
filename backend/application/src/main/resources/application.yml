@@ -2,9 +2,9 @@ spring:
   application:
     name: estate-empire-initiative
   datasource:
-    password: postgres
+#    password: postgres
     url: jdbc:postgresql://localhost:5432/estate-empire-initiative
-    username: postgres
+#    username: postgres
   jpa:
     hibernate:
       ddl-auto: create-drop
