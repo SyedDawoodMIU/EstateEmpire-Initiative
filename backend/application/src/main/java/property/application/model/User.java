@@ -14,12 +14,11 @@ public class User extends AuditEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long userId;
 
-    @Column(unique = true)
-    private String username;
     private String password;
 
     @Column(unique = true)
     private String email;
+
     @ManyToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinTable(name = "Role", joinColumns = @JoinColumn(name = "userId"), inverseJoinColumns = @JoinColumn(name = "roleId"))
     private List<Role> roles;

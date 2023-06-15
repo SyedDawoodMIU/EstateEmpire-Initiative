@@ -1,4 +1,4 @@
-package property.application.controller.exception;
+package property.application.exception;
 
 import org.springframework.http.HttpStatus;
 import property.application.exception.BaseException;

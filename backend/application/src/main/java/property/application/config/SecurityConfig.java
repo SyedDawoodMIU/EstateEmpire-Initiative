@@ -14,6 +14,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import property.application.filter.JwtFilter;
 
 @Configuration
@@ -21,37 +22,43 @@ import property.application.filter.JwtFilter;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
+    private final UserDetailsService userDetailsService;
+    String[] roles = {"ADMIN", "CUSTOMER", "AGENT", "USER"};
     @Autowired
     private JwtFilter jwtFilter;
-    private final UserDetailsService userDetailsService;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
     public UserDetailsService userDetailsSvc() {
         return userDetailsService;
     }
-    String[] roles = { "ADMIN","CUSTOMER","AGENT","USER"};
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-                .csrf().disable().cors().and()
-                .authorizeHttpRequests()
-                .requestMatchers("/api/v1/authenticate/**").permitAll()
-                .requestMatchers("/api/v1/users/**").hasAnyAuthority("USER")
-                .requestMatchers("/api/v1/users**").hasAnyAuthority("CUSTOMER")
-                .requestMatchers("/api/v1/users/**").hasAnyAuthority(roles)
-                .anyRequest().permitAll()
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+            .csrf().disable()
+            .cors()
+            .and()
+            .authorizeHttpRequests()
+            .requestMatchers("/api/v1/authenticate/**").permitAll()
+            .requestMatchers("/api/v1/users/**").hasAnyAuthority("USER")
+            .requestMatchers("/api/v1/users**").hasAnyAuthority("CUSTOMER")
+            .requestMatchers("/api/v1/users/**").hasAnyAuthority(roles)
+            .anyRequest()
+            .permitAll()
+            .and()
+            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
+
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/webjars/**");

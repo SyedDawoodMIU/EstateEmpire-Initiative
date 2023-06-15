@@ -1,4 +1,5 @@
 package property.application.service.impl;
+
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -19,7 +20,8 @@ public class EmpireUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         var user = userRepo.findByEmail(username);
-        var userDetails = new EmpireUserDetails(user);
+        var loggedInUser = user.orElseThrow(() -> new UsernameNotFoundException("Username not found"));
+        var userDetails = new EmpireUserDetails(loggedInUser);
         return userDetails;
     }
 
