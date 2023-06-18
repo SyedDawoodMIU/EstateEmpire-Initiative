@@ -1,4 +1,4 @@
-package property.application.service.impl;
+package property.application.config.securityUser;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.security.core.GrantedAuthority;
