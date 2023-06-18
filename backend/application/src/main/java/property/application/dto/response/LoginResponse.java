@@ -1,4 +1,4 @@
-package property.application.model.request;
+package property.application.dto.response;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class RefreshTokenRequest {
+public class LoginResponse {
     private String accessToken;
     private String refreshToken;
 }

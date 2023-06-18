@@ -8,6 +8,8 @@ import property.application.mapper.UserMapper;
 import property.application.repo.UserRepo;
 import property.application.service.UserService;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService {
@@ -21,5 +23,10 @@ public class UserServiceImpl implements UserService {
         var user = userMapper.toEntity(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepo.save(user);
+    }
+
+    @Override
+    public List<UserDto> findAll() {
+        return userMapper.toDtoList(userRepo.findAll());
     }
 }
