@@ -1,7 +1,6 @@
 package property.application.config;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -23,14 +22,7 @@ import property.application.filter.JwtFilter;
 public class SecurityConfig {
 
     private final UserDetailsService userDetailsService;
-    String[] roles = {"ADMIN", "CUSTOMER", "AGENT", "USER"};
-    @Autowired
-    private JwtFilter jwtFilter;
-
-    @Bean
-    public BCryptPasswordEncoder bCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+    private final JwtFilter jwtFilter;
 
     @Bean
     public UserDetailsService userDetailsSvc() {
@@ -38,21 +30,23 @@ public class SecurityConfig {
     }
 
     @Bean
+    public BCryptPasswordEncoder bCryptPasswordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+
+    @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
         http
-            .csrf().disable()
-            .cors()
-            .and()
-            .authorizeHttpRequests()
-            .requestMatchers("/api/v1/authenticate/**").permitAll()
-            .requestMatchers("/api/v1/users/**").hasAnyAuthority("USER")
-            .requestMatchers("/api/v1/users**").hasAnyAuthority("CUSTOMER")
-            .requestMatchers("/api/v1/users/**").hasAnyAuthority(roles)
-            .anyRequest()
-            .permitAll()
-            .and()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .csrf().disable()
+                .cors().and()
+                .authorizeHttpRequests()
+                .requestMatchers("/authenticate/**").permitAll()
+                .requestMatchers("/users/register").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         http.addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
 
@@ -61,7 +55,7 @@ public class SecurityConfig {
 
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
-        return (web) -> web.ignoring().requestMatchers("/images/**", "/js/**", "/webjars/**");
+        return (web) -> web.ignoring().requestMatchers("/swagger-ui/**","/v3/api-docs/**","/images/**", "/js/**", "/webjars/**");
     }
 
     @Bean

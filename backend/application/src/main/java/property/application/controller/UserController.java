@@ -15,7 +15,7 @@ public class UserController {
 
 
     @ResponseStatus(HttpStatus.CREATED)
-    @PostMapping
+    @PostMapping("/register")
     public void saveUser(@RequestBody UserDto userDto){
         userService.save(userDto);
     }

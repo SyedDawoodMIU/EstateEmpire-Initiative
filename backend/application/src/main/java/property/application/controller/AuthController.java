@@ -7,14 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import property.application.model.request.LoginRequest;
+import property.application.model.request.RefreshTokenRequest;
 import property.application.model.response.LoginResponse;
 import property.application.service.AuthService;
 
-import java.io.IOException;
-
 
 @RestController
-@RequestMapping("authenticate")
+@RequestMapping("/authenticate")
 public class AuthController {
 
     private final AuthService authService;
@@ -31,13 +30,9 @@ public class AuthController {
 
     }
 
-//    @PostMapping("/refresh-token")
-//    public void refreshToken(
-//            HttpServletRequest request,
-//            HttpServletResponse response
-//    ) throws IOException {
-//        authService.refreshToken(request, response);
-//    }
-
+    @PostMapping("/refreshToken")
+    public LoginResponse refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+        return authService.refreshToken(refreshTokenRequest);
+    }
 
 }
