@@ -7,8 +7,6 @@ export const handleLogin =
     try {
       const accessToken = await AuthService.login(username, password);
       dispatch(login(accessToken));
-      const navigate = useNavigate();
-      navigate("/dashboard"); // Redirect to the dashboard or any desired page upon successful login
     } catch (error) {
       // Handle login error
     }
