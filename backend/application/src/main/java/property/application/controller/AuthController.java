@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import property.application.model.request.LoginRequest;
-import property.application.model.request.RefreshTokenRequest;
-import property.application.model.response.LoginResponse;
+import property.application.dto.request.LoginRequest;
+import property.application.dto.request.RefreshTokenRequest;
+import property.application.dto.response.LoginResponse;
 import property.application.service.AuthService;
 
 
 @RestController
-@RequestMapping("/authenticate")
+@RequestMapping("authenticate")
 public class AuthController {
 
     private final AuthService authService;

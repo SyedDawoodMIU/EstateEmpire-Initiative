@@ -1,5 +1,5 @@
 package property.application.dto;
 
 
-public record UserDto(String username, String password, String email) {
+public record UserDto(String password, String email) {
 }

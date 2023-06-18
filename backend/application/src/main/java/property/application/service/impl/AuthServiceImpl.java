@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Service;
-import property.application.model.request.LoginRequest;
-import property.application.model.request.RefreshTokenRequest;
-import property.application.model.response.LoginResponse;
+import property.application.dto.request.LoginRequest;
+import property.application.dto.request.RefreshTokenRequest;
+import property.application.dto.response.LoginResponse;
 import property.application.service.AuthService;
 import property.application.util.JwtUtil;
 
