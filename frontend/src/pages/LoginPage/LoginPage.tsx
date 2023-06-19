@@ -7,7 +7,7 @@ const LoginPage = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
@@ -15,7 +15,7 @@ const LoginPage = () => {
     e.preventDefault();
 
     try {
-      dispatch(handleLogin(username, password));
+      dispatch(handleLogin(email, password));
       navigate("/dashboard");
     } catch (error: any) {
       setError(error.message);
@@ -27,14 +27,14 @@ const LoginPage = () => {
       <h2 className="mb-4">Login</h2>
       <form onSubmit={login}>
         <div className="mb-3">
-          <label htmlFor="username" className="form-label">
-            Username
+          <label htmlFor="email" className="form-label">
+            Email
           </label>
           <input
             type="text"
-            id="username"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            id="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             className="form-control"
             required
           />

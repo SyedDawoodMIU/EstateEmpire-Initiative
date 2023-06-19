@@ -3,9 +3,9 @@ import AuthService from "./AuthService";
 import { login } from "./AuthSlice";
 
 export const handleLogin =
-  (username: string, password: string) => async (dispatch: any) => {
+  (email: string, password: string) => async (dispatch: any) => {
     try {
-      const accessToken = await AuthService.login(username, password);
+      const accessToken = await AuthService.login(email, password);
       dispatch(login(accessToken));
     } catch (error) {
       // Handle login error

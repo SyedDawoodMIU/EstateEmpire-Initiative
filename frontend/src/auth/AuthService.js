@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const apiClient = axios.create({
-  baseURL: "http://localhost:8080",
+  baseURL: "http://localhost:9990/api/v1",
   withCredentials: false,
   headers: {
     Accept: "application/json",
@@ -11,11 +11,10 @@ const apiClient = axios.create({
 
 const AuthService = {
   // Function to initiate the OAuth2 login process
-  login: async (username, password) => {
+  login: async (email, password) => {
     try {
-      const response = await apiClient.post("/authenticate/login", {
-        grant_type: "password",
-        username,
+      const response = await apiClient.post("/authenticate", {
+        email,
         password,
       });
 
