@@ -1,10 +1,11 @@
 package property.application.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import property.application.dto.UserDto;
+import property.application.dto.response.LoginResponse;
 import property.application.service.UserService;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public void saveUser(@RequestBody UserDto userDto){
-        userService.save(userDto);
+    public LoginResponse saveUser(@RequestBody @Valid UserDto userDto){
+        return userService.save(userDto);
     }
 
     @ResponseStatus(HttpStatus.OK)
