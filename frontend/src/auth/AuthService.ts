@@ -1,3 +1,4 @@
+import { getRefreshToken } from "./../utils/tokenUtils";
 import axios from "axios";
 import { iUserData } from "../types/UserTypes";
 const apiClient = axios.create({
@@ -50,6 +51,22 @@ const AuthService = {
       throw new Error("Failed to register. Please try again.");
     }
   },
+
+  // Function to get a new access token with a refresh token
+  getAccessTokenWithRefreshToken: async (refreshToken: string) => {
+    try {
+      const response = await apiClient.post("/authenticate/refresh", {
+        refreshToken,
+      });
+      const { access_token } = response.data;
+      return access_token;
+    } catch (error) {
+      throw new Error("Failed to get access token. Please try again.");
+    }
+  },
 };
+
+
+
 
 export default AuthService;
