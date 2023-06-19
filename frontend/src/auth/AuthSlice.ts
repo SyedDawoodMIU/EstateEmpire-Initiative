@@ -6,6 +6,7 @@ import { iAuthState } from "./AuthTypes";
 const initialState: iAuthState = {
   authenticated: false,
   accessToken: "",
+  refreshToken: ""
 };
 
 export const authSlice = createSlice({
@@ -20,6 +21,7 @@ export const authSlice = createSlice({
     logout: (state) => {
       state.accessToken = "";
       state.authenticated = false;
+      state.refreshToken = "";
     },
   },
 });
