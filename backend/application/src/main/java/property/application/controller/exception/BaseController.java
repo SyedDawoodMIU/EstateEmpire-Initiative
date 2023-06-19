@@ -11,15 +11,35 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 import property.application.controller.constants.BaseErrorCode;
 import property.application.dto.ErrorResponse;
-import property.application.exception.BadRequestException;
-import property.application.exception.BaseException;
-import property.application.exception.InternalServerException;
+import property.application.exception.*;
 
 @Controller
 @ControllerAdvice
 public class BaseController extends ResponseEntityExceptionHandler {
 
     private static Logger LOGGER = LoggerFactory.getLogger(BaseController.class);
+
+    @ExceptionHandler({MyFileNotFoundException.class})
+    public ResponseEntity<ErrorResponse> handleFileNotFoundException(Exception e, HttpServletRequest request) {
+        LOGGER.error("Exception caught on base controller ", e);
+        BaseException baseException;
+        if (e instanceof BaseException) baseException = ((BaseException) e);
+        else
+            baseException = new MyFileNotFoundException(e.getMessage());
+        baseException = addPathToErrorResponse(baseException, request);
+        return new ResponseEntity<>(baseException.getErrorResponse(), baseException.getHttpStatus());
+    }
+
+    @ExceptionHandler({FileStorageException.class})
+    public ResponseEntity<ErrorResponse> handleFileStorageException(Exception e, HttpServletRequest request) {
+        LOGGER.error("Exception caught on base controller ", e);
+        BaseException baseException;
+        if (e instanceof BaseException) baseException = ((BaseException) e);
+        else
+            baseException = new FileStorageException(e.getMessage());
+        baseException = addPathToErrorResponse(baseException, request);
+        return new ResponseEntity<>(baseException.getErrorResponse(), baseException.getHttpStatus());
+    }
 
     @ExceptionHandler({BadCredentialsException.class})
     public ResponseEntity<ErrorResponse> handleBadRequestException(Exception e, HttpServletRequest request) {
