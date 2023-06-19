@@ -1,5 +1,6 @@
 import React from "react";
 import PropertyCard from "../../components/property/PropertyCard";
+import { iProperty } from "../../auth/AuthTypes";
 
 const BuyPage: React.FC = () => {
   // Assume you have an array of properties available for purchase
@@ -13,7 +14,7 @@ const BuyPage: React.FC = () => {
   return (
     <div>
       <h2>Properties available for purchase</h2>
-      {properties.map((property) => (
+      {properties.map((property:iProperty) => (
         <PropertyCard key={property.id} property={property} />
       ))}
     </div>

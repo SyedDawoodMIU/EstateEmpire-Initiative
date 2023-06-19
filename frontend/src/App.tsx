@@ -1,9 +1,6 @@
 import React from "react";
-import Navigation from "./baseComponents/Navigation";
 import { AppRoutes } from "./AppRoutes";
-import { useAppSelector } from "./store/storeHooks";
-import { RootState } from "./store/store";
-import { CommonRoutes } from "./CommonRoutes";
+import Navigation from "./BaseComponents/Navigation";
 
 const App = () => {
   const isAuthenticated = useAppSelector(
