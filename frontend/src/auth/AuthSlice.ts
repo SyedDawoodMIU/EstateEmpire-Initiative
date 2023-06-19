@@ -6,7 +6,7 @@ import { iAuthState } from "./AuthTypes";
 const initialState: iAuthState = {
   authenticated: false,
   accessToken: "",
-  refreshToken: ""
+  refreshToken: "",
 };
 
 export const authSlice = createSlice({
@@ -14,18 +14,24 @@ export const authSlice = createSlice({
   // `createSlice` will infer the state type from the `initialState` argument
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<string>) => {
-      state.accessToken = action.payload;
+    loginAction: (state, action: PayloadAction<iAuthState>) => {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
       state.authenticated = true;
     },
-    logout: (state) => {
+    logoutAction: (state) => {
       state.accessToken = "";
       state.authenticated = false;
       state.refreshToken = "";
     },
+    registerAction: (state, action: PayloadAction<iAuthState>) => {
+      state.accessToken = action.payload.accessToken;
+      state.refreshToken = action.payload.refreshToken;
+      state.authenticated = true;
+    },
   },
 });
 
-export const { login, logout } = authSlice.actions;
+export const { loginAction, logoutAction, registerAction } = authSlice.actions;
 export const authState = (state: RootState) => state.auth;
 export default authSlice.reducer;
