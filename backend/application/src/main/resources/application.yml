@@ -7,9 +7,9 @@ spring:
   application:
     name: estate-empire-initiative
   datasource:
-    password: postgres
+#    password: postgres
     url: jdbc:postgresql://localhost:5432/estate-empire-initiative
-    username: postgres
+#    username: postgres
   jpa:
     hibernate:
       ddl-auto: create-drop
@@ -42,8 +42,8 @@ management:
       show-details: always
     metrics:
       enabled: 'true'
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: 'true'
 
