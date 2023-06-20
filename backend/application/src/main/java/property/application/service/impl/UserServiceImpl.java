@@ -1,7 +1,7 @@
 package property.application.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import property.application.config.securityUser.EmpireUserDetails;
@@ -15,12 +15,12 @@ import property.application.repo.UserRepo;
 import property.application.service.UserService;
 import property.application.util.JwtUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
@@ -53,4 +53,27 @@ public class UserServiceImpl implements UserService {
     public List<UserDto> findAll() {
         return userMapper.toDtoList(userRepo.findAll());
     }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
+    }
+
+    @Override
+    public UserDto getUserById(Long id){
+        return userMapper.toDto(
+                userRepo.findById(id)
+                        .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found")));
+    }
+
+    @Override
+    public UserDto update(UserDto userDto, Long id) {
+        var updateUser = userMapper.toEntity(userDto);
+        var user = userRepo.findById(id)
+                .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found"));
+        user.setUserId(id);
+        userRepo.save(updateUser);
+        return userDto;
+    }
+
 }
