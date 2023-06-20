@@ -27,7 +27,7 @@ const UserGrid = () => {
       const updatedUsers = users.map((user) => {
         if (user.userId === userId) {
           dispatch(updateUserAction(user.userId, user));
-          return { ...user, disabled: !user.isDisabled };
+          return { ...user, isDisabled: !user.isDisabled };
         }
         return user;
       });

@@ -14,22 +14,17 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!isTokenExpired()) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
-
   const login = async (e: FormEvent) => {
     e.preventDefault();
+    navigate("/dashboard");
 
     try {
       dispatch(handleLogin(email, password));
-      navigate("/dashboard");
     } catch (error: any) {
       setError(error.message);
     }
   };
+
 
   return (
     <div>
