@@ -58,10 +58,10 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public List<PropertyDto> searchProperty(String city, String state) {
-//        return propertyRepository.searchProperty(city, state)
-//       .stream().map(property -> modelMapper.map(property, PropertyDto.class))
-//                .toList();
-        return null;
+        return propertyRepository.searchProperty(city, state)
+       .stream().map(property -> modelMapper.map(property, PropertyDto.class))
+                .toList();
+
 
     }
 
