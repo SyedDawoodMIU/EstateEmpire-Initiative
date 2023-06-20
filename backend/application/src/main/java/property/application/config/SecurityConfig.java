@@ -43,6 +43,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/authenticate/**").permitAll()
                 .requestMatchers("/users/register").permitAll()
+<<<<<<< Updated upstream
+=======
+                .requestMatchers("/properties/**").hasAnyAuthority("ADMIN", "OWNER")
+                .requestMatchers("/file/**").permitAll()
+>>>>>>> Stashed changes
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()
