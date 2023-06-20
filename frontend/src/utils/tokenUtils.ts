@@ -1,4 +1,5 @@
 export const storeToken = (accessToken: string) => {
+  
   localStorage.setItem("accessToken", accessToken);
 };
 

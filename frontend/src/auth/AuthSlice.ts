@@ -12,7 +12,7 @@ import {
 import { clear } from "console";
 
 const initialState: iAuthState = {
-  authenticated: false,
+  isAuthenticated: false,
   accessToken: "",
   refreshToken: "",
 };
@@ -24,13 +24,13 @@ export const authSlice = createSlice({
     loginAction: (state, action: PayloadAction<iAuthState>) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-      state.authenticated = true;
+      state.isAuthenticated = true;
       storeToken(action.payload.accessToken);
       storeRefreshToken(action.payload.refreshToken);
     },
     logoutAction: (state) => {
       state.accessToken = "";
-      state.authenticated = false;
+      state.isAuthenticated = false;
       state.refreshToken = "";
       clearToken();
       clearRefreshToken();
@@ -38,7 +38,7 @@ export const authSlice = createSlice({
     registerAction: (state, action: PayloadAction<iAuthState>) => {
       state.accessToken = action.payload.accessToken;
       state.refreshToken = action.payload.refreshToken;
-      state.authenticated = true;
+      state.isAuthenticated = true;
       storeToken(action.payload.accessToken);
       storeRefreshToken(action.payload.refreshToken);
     }

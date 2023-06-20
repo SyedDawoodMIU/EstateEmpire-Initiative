@@ -12,12 +12,10 @@ public interface UserService {
 
     List<UserDtoResponse> findAll();
 
-<<<<<<< Updated upstream
-=======
     void deleteUser(Long id);
 
     UserDtoResponse getUserById(Long id);
 
     UserDtoResponse update(UserDto userDto, Long id);
->>>>>>> Stashed changes
+
 }

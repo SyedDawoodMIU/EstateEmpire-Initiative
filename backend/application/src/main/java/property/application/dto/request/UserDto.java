@@ -15,5 +15,6 @@ public class UserDto {
     private String role;
     @NotNull(message = "email cannot be null")
     private String email;
+    private Boolean isDisabled = false;
 
 }
