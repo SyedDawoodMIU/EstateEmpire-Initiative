@@ -5,13 +5,13 @@ const Property = (props:iProperty) => {
 
     return (
         <div className="Content">
-            <p>{props.title}</p>
+            <p>{props.propertyId}</p>
             <div className="Info">
                 <br/>
-                <div className="propertyLocation">{props.location}</div>
-                <div className="propertyPrice">{props.price}$</div>
-                <div className="propertyImage">{props.imageUrl}</div>
-                <div className="propertyDescription">{props.description}</div>
+                <div className="propertyLocation">{props.address?.country}</div>
+                <div className="propertyPrice">{props.propertyDetails?.rentAmount}$</div>
+                {/* <div className="propertyImage">{props.imageUrl}</div> */}
+                {/* <div className="propertyDescription">{props.description}</div> */}
             </div>
         </div>
     )

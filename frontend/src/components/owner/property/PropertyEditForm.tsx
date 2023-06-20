@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom';
 import { iProperty } from '../../../types/PropertyTypes';
 
 export const PropertyEditForm = (props:iProperty) => {
-    const formRef = useRef();
+    const formRef = useRef(null);
     const params = useParams<{ id?: string }>();
 
     const EditHandler = async (event:React.FormEvent<HTMLFormElement>) => {

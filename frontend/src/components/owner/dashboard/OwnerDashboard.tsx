@@ -5,7 +5,7 @@ const OwnerDashboard = () => {
 
     return (
         <div>
-            <PropertyList />
+            {/* <PropertyList /> */}
         </div>
     )
 }

@@ -17,13 +17,13 @@ const PropertyList = () => {
     }, [flag]);
 
     const propertyList = property.map((property:iProperty) => {
-        return <Link to={`/properties/${property.id}`} key={property.id}>
+        return <Link to={`/properties/${property.propertyId}`} key={property.propertyId}>
                 <Property 
-                title={property.title}
-                location={property.location}
-                price={property.price}
-                imageUrl={property.imageUrl}
-                description={property.description}
+                // title={property.title}
+                // location={property.address?.city}
+                // price={property.propertyDetails?.rentAmount}
+                // imageUrl={property.imageUrl}
+                // description={property.description}
                 />  
             </Link> 
         });
