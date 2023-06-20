@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class PropertyStatus extends AuditEntity{
+public class PropertyStatus{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

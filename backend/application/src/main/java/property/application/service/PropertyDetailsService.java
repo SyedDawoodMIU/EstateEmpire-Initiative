@@ -13,4 +13,5 @@ public interface PropertyDetailsService {
     PropertyDetails updatePropertyDetails(Long id, PropertyDetailsDto propertyDetailsDto);
 
     void deletePropertyDetails(Long id);
+
 }

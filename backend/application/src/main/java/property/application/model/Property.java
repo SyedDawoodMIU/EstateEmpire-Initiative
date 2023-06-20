@@ -14,13 +14,10 @@ public class Property extends AuditEntity {
     private Long propertyId;
     private String type;
     private int viewCount;
-//    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "details_id")
-//    private PropertyDetails propertyDetails;
-    @OneToMany
-    @JoinColumn(name = "review_id")
-    private List<Review> review;
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "details_id")
+    private PropertyDetails propertyDetails;
+    @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
 
