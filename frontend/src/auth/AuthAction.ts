@@ -4,20 +4,19 @@ import { iUserData } from "../types/UserTypes";
 import { iAuthState } from "./AuthTypes";
 import { loginAction, logoutAction, registerAction } from "./AuthSlice";
 import AuthService from "./AuthService";
-import { decodeToken, getRefreshToken, getToken } from "../utils/tokenUtils";
+import {
+  clearToken,
+  decodeToken,
+  getRefreshToken,
+  getToken,
+} from "../utils/tokenUtils";
+import { clear } from "console";
 
 export const handleLogin =
   (email: string, password: string) => async (dispatch: any) => {
     try {
-      const { access_token, refresh_token } = await AuthService.login(
-        email,
-        password
-      );
-
-      let tokens: iAuthState = {
-        accessToken: access_token,
-        refreshToken: refresh_token,
-      };
+      let tokens: iAuthState = {} as iAuthState;
+      tokens = await AuthService.login(email, password);
       dispatch(loginAction(tokens));
       initializeTokenRefresh(tokens.accessToken);
     } catch (error) {
@@ -37,6 +36,7 @@ export const handleRegistration =
         refreshToken: refresh_token,
       };
       dispatch(registerAction(tokens));
+      initializeTokenRefresh(tokens.accessToken);
     } catch (error) {
       // Handle login error
     }
@@ -44,50 +44,56 @@ export const handleRegistration =
 
 export const handleLogout = () => async (dispatch: any) => {
   try {
+    cleanupTokenRefresh();
     dispatch(logoutAction());
   } catch (error) {
     // Handle logout error
   }
 };
 
-export const getAccessTokenWithRefreshToken =
-  async () => async (dispatch: any) => {
-    try {
-      const refreshToken = getRefreshToken();
-      const { access_token, refresh_token } =
-        await AuthService.getAccessTokenWithRefreshToken(refreshToken ?? "");
-      let tokens: iAuthState = {
-        accessToken: access_token,
-        refreshToken: refresh_token,
-      };
-      dispatch(loginAction(tokens));
-      return access_token;
-    } catch (error) {
-      // Handle logout error
-    }
-  };
+export const getAccessTokenWithRefreshToken = () => async (dispatch: any) => {
+  try {
+    const refreshToken = getRefreshToken();
+    const { access_token, refresh_token } =
+      await AuthService.getAccessTokenWithRefreshToken(refreshToken ?? "");
+    let tokens: iAuthState = {
+      accessToken: access_token,
+      refreshToken: refresh_token,
+    };
+    dispatch(loginAction(tokens));
+    return access_token;
+  } catch (error) {
+    // Handle logout error
+  }
+};
 
 const TOKEN_REFRESH_THRESHOLD = 300; // Number of seconds before token expiry to trigger refresh (e.g., 5 minutes)
 let tokenRefreshTimeout: any = null;
 
-// export const checkTokenExpiry = () => async (dispatch: any) => {
-//   const token = getToken();
-//   if (token) {
-//     const decodedToken = decodeToken(token);
-//     if (decodedToken && decodedToken.exp) {
-//       const currentTime = Math.floor(Date.now() / 1000);
-//       const expiresIn = decodedToken.exp - currentTime;
-//       if (expiresIn <= TOKEN_REFRESH_THRESHOLD) {
-//         try {
-//           getAccessTokenWithRefreshToken();
-//         } catch (error) {
-//           // Handle token refresh error
-//           console.error("Token refresh failed:", error);
-//         }
-//       }
-//     }
-//   }
-// };
+export const isTokenExpired = () => {
+  const token = getToken();
+  if (token) {
+    const decodedToken = decodeToken(token);
+    if (decodedToken && decodedToken.exp) {
+      const currentTime = Math.floor(Date.now() / 1000);
+      const expiresIn = decodedToken.exp - currentTime;
+      if (expiresIn <= TOKEN_REFRESH_THRESHOLD) {
+        clearToken();
+        (() => (dispatch:any) => {
+          dispatch(handleLogout());
+        })();
+        return true;
+      }
+      return false;
+    }
+
+    clearToken();
+    return true;
+  }
+
+  clearToken();
+  return true;
+};
 
 const initializeTokenRefresh = (accessToken: string) => {
   if (accessToken) {
