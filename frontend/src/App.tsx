@@ -1,8 +1,8 @@
 import React from "react";
 import Navigation from "./baseComponents/Navigation";
 import { AppRoutes } from "./AppRoutes";
-import { useAppSelector } from "./store/storeHooks";
-import { RootState } from "./store/store";
+import { useAppSelector } from "./store/StoreHooks";
+import { RootState } from "./store/Store";
 import { CommonRoutes } from "./CommonRoutes";
 
 const App = () => {
