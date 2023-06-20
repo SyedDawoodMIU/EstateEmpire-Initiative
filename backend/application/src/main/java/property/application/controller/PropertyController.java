@@ -4,7 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import property.application.dto.PropertyDto;
+import property.application.dto.request.PropertyDtoRequest;
+import property.application.dto.response.PropertyDto;
 import property.application.model.enums.PropertyType;
 import property.application.service.PropertyService;
 
@@ -20,7 +21,7 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @PostMapping
-    public ResponseEntity<?> save(@RequestBody PropertyDto p){
+    public ResponseEntity<?> save(@ModelAttribute PropertyDtoRequest p){
        return ResponseEntity.ok(propertyService.createProperty(p));
     }
     @GetMapping
@@ -43,7 +44,7 @@ public class PropertyController {
 
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
-    public void updateProperty(@PathVariable("id") Long id, @RequestBody PropertyDto propertyDto){
+    public void updateProperty(@PathVariable("id") Long id, @RequestBody PropertyDtoRequest propertyDto){
         propertyService.updateProperty(id,propertyDto);
     }
 
