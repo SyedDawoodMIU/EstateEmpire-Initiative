@@ -1,8 +1,7 @@
 package property.application.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,6 +20,9 @@ public class PropertyImage extends AuditEntity {
 
     private String downloadURL;
 
-    private Long propertyId;
+    @ManyToOne
+    @JoinColumn(name = "property_id")
+    @JsonManagedReference
+    private Property property;
 
 }

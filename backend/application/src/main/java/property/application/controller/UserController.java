@@ -19,14 +19,31 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/register")
-    public LoginResponse saveUser(@RequestBody @Valid UserDto userDto){
+    public LoginResponse saveUser(@RequestBody @Valid UserDto userDto) {
         return userService.save(userDto);
+    }
+
+    @PutMapping("/{id}")
+    public UserDto update(@RequestBody @Valid UserDto userDto, @PathVariable("id")Long id){
+        return userService.update(userDto,id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<UserDto> getAllUser(){
+    public List<UserDto> getAllUser() {
         return userService.findAll();
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("{id}")
+    public void deleteUser(@PathVariable("id") Long id) {
+        userService.deleteUser(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("{id}")
+    public UserDto getUserById(@PathVariable("id") Long id) {
+        return userService.getUserById(id);
     }
 
 }

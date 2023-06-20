@@ -17,12 +17,13 @@ public class EmpireUserDetails implements UserDetails {
     @JsonIgnore
     private String password;
     private List<Role> roles;
+    private Boolean isDisabled;
 
     public EmpireUserDetails(User user) {
         this.email = user.getEmail();
         this.password = user.getPassword();
         this.roles = user.getRoles();
-
+        this.isDisabled = user.getIsDisabled();
     }
 
     @Override
@@ -59,6 +60,6 @@ public class EmpireUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return !isDisabled;
     }
 }
