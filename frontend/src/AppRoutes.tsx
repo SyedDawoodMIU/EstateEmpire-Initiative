@@ -16,10 +16,11 @@ export const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route
+        {/* <Route
           path="/dashboard"
           element={<PrivateRoute element={<OwnerDashboard />} />}
-        />
+        /> */}
+        <Route path="/dashboard" element={<OwnerDashboard />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/buy" element={<BuyPage />} />
