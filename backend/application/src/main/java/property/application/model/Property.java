@@ -20,6 +20,8 @@ public class Property extends AuditEntity {
     @OneToMany
     @JoinColumn(name = "review_id")
     private List<Review> review;
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private Address address;
 
 
 
