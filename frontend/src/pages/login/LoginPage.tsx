@@ -1,7 +1,10 @@
-import React, { useState, FormEvent } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, FormEvent, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { useAppSelector, useAppDispatch } from "../../store/storeHooks";
-import { handleLogin } from "../../auth/AuthAction";
+import { isTokenExpired, handleLogin } from "../../auth/AuthAction";
+import { Container, Row, Form, Button } from "react-bootstrap";
+import { getToken } from "../../utils/tokenUtils";
+import { debug } from "console";
 
 const LoginPage = () => {
   const navigate = useNavigate();
@@ -10,6 +13,12 @@ const LoginPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    if (!isTokenExpired()) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const login = async (e: FormEvent) => {
     e.preventDefault();
@@ -23,39 +32,39 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="container">
-      <h2 className="mb-4">Login</h2>
-      <form onSubmit={login}>
-        <div className="mb-3">
-          <label htmlFor="email" className="form-label">
-            Email
-          </label>
-          <input
-            type="text"
-            id="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            className="form-control"
-            required
-          />
-        </div>
-        <div className="mb-3">
-          <label htmlFor="password" className="form-label">
-            Password
-          </label>
-          <input
-            type="password"
-            id="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="form-control"
-            required
-          />
-        </div>
-        <button type="submit" className="btn btn-primary">
-          Login
-        </button>
-      </form>
+    <div>
+      <h1 className="text-center mb-4">Login</h1>
+      <Container
+        className="d-flex justify-content-center "
+        style={{ height: "100vh" }}
+      >
+        <Form onSubmit={login} className="w-100" style={{ maxWidth: "400px" }}>
+          <Form.Group className="mb-3">
+            <Form.Label>Email</Form.Label>
+            <Form.Control
+              type="text"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Password</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Link to="/register">Register</Link>
+          </Form.Group>
+          <Button type="submit" variant="primary">
+            Login
+          </Button>
+        </Form>
+      </Container>
     </div>
   );
 };

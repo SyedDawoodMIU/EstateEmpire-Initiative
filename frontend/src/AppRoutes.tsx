@@ -1,15 +1,25 @@
-import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React, { FC, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import LoginPage from "./pages/login/LoginPage";
 import RegistrationPage from "./pages/login/RegistrationPage";
 import BuyPage from "./pages/buy/BuyPage";
 import SellPage from "./pages/sell/SellPage";
+import OwnerDashboard from "./pages/owner/OwnerDashboard";
+import PrivateRoute from "./PrivateRoute";
 
 export const AppRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
+        <Route
+          path="/dashboard"
+          element={<PrivateRoute element={<OwnerDashboard />} />}
+        />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegistrationPage />} />
         <Route path="/buy" element={<BuyPage />} />

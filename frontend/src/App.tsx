@@ -4,7 +4,7 @@ import { AppRoutes } from "./AppRoutes";
 
 const App = () => {
   return (
-    <div>
+    <div className="container-fluid">
       <Navigation />
       <AppRoutes />
     </div>

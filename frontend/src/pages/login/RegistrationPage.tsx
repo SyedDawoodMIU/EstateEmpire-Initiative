@@ -1,18 +1,24 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { iUserData } from "../../types/UserTypes";
-import { handleRegistration } from "../../auth/AuthAction";
+import { isTokenExpired, handleRegistration } from "../../auth/AuthAction";
 import { useAppDispatch } from "../../store/storeHooks";
-
-interface RegistrationFormProps {
-  onSubmit: (userData: iUserData) => void;
-}
+import { Form, Button, Container } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 
 const RegistrationPage = () => {
-    const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userType, setUserType] = useState<"OWNER" | "CUSTOMER">("OWNER");
+
+  useEffect(() => {
+    if (!isTokenExpired()) {
+      navigate("/dashboard");
+    }
+  }, [navigate]);
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
@@ -32,52 +38,67 @@ const RegistrationPage = () => {
     setEmail("");
     setPassword("");
     setUserType("OWNER");
+    navigate("/dashboard");
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <div>
-        <label htmlFor="name">Name:</label>
-        <input
-          type="text"
-          id="name"
-          value={name}
-          onChange={(event) => setName(event.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="email">Email:</label>
-        <input
-          type="email"
-          id="email"
-          value={email}
-          onChange={(event) => setEmail(event.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="password">Password:</label>
-        <input
-          type="password"
-          id="password"
-          value={password}
-          onChange={(event) => setPassword(event.target.value)}
-        />
-      </div>
-      <div>
-        <label htmlFor="userType">User Type:</label>
-        <select
-          id="userType"
-          value={userType}
-          onChange={(event) =>
-            setUserType(event.target.value as "OWNER" | "CUSTOMER")
-          }
+    <div>
+      <h1 className="text-center mb-4">Register</h1>
+
+      <Container
+        className="d-flex justify-content-center "
+        style={{ height: "100vh" }}
+      >
+        <Form
+          onSubmit={handleSubmit}
+          className="w-100"
+          style={{ maxWidth: "400px" }}
         >
-          <option value="Owner">Owner</option>
-          <option value="Customer">Customer</option>
-        </select>
-      </div>
-      <button type="submit">Register</button>
-    </form>
+          <Form.Group controlId="name" className="mb-3">
+            <Form.Label>Name:</Form.Label>
+            <Form.Control
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="email" className="mb-3">
+            <Form.Label>Email:</Form.Label>
+            <Form.Control
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="password" className="mb-3">
+            <Form.Label>Password:</Form.Label>
+            <Form.Control
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          </Form.Group>
+
+          <Form.Group controlId="userType" className="mb-3">
+            <Form.Label>User Type:</Form.Label>
+            <Form.Control
+              as="select"
+              value={userType}
+              onChange={(event) =>
+                setUserType(event.target.value as "OWNER" | "CUSTOMER")
+              }
+            >
+              <option value="OWNER">Owner</option>
+              <option value="CUSTOMER">Customer</option>
+            </Form.Control>
+          </Form.Group>
+
+          <Button type="submit">Register</Button>
+        </Form>
+      </Container>
+    </div>
   );
 };
 
