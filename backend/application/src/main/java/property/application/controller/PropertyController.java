@@ -44,12 +44,12 @@ public class PropertyController {
         return  ResponseEntity.ok(HttpStatus.OK);
 
     }
-    @GetMapping("/search")
-    public ResponseEntity<?> searchProperty(@RequestParam("city") String city, @RequestParam("state") String state){
-        List<PropertyDto> propertyDto = propertyService.searchProperty(city,state);
-        return  ResponseEntity.ok(propertyDto);
-
-    }
+//    @GetMapping("/search")
+//    public ResponseEntity<?> searchProperty(@RequestParam("city") String city, @RequestParam("state") String state){
+//        List<PropertyDto> propertyDto = propertyService.searchProperty(city,state);
+//        return  ResponseEntity.ok(propertyDto);
+//
+//    }
 
 
 }

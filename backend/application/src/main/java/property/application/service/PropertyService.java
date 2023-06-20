@@ -11,6 +11,5 @@ public interface PropertyService {
     PropertyDto updateProperty(Long id, PropertyDto updatedProperty);
     void deleteProperty(Long id);
 
-
-    List<PropertyDto> searchProperty(String city, String state);
 }
+

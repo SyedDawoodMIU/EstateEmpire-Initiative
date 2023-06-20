@@ -1,9 +1,12 @@
 package property.application.service.impl;
 
+import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import property.application.controller.constants.BaseErrorCode;
 import property.application.dto.PropertyDto;
+import property.application.exception.BadRequestException;
 import property.application.model.Property;
 import property.application.model.Review;
 import property.application.repo.PropertyRepository;
@@ -24,6 +27,7 @@ public class PropertyServiceImpl implements PropertyService {
     ModelMapper modelMapper;
 
     @Override
+    @Transactional
     public List<PropertyDto> getAllProperties() {
         return propertyRepository.findAll()
                 .stream().map(property -> modelMapper.map(property, PropertyDto.class)).toList();
@@ -31,13 +35,15 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public PropertyDto getPropertyById(Long id) {
-        return propertyRepository.findById(id)
-                .map(property -> modelMapper.map(property, PropertyDto.class)).orElse(null);
+        var property = propertyRepository.findById(id).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property not found"));
+        property.setViewCount(property.getViewCount() + 1);
+        return modelMapper.map(propertyRepository.save(property), PropertyDto.class);
     }
 
     @Override
     public PropertyDto createProperty(PropertyDto propertyDto) {
         Property property = modelMapper.map(propertyDto, Property.class);
+        property.setViewCount(0);
         return modelMapper.map(propertyRepository.save(property), PropertyDto.class);
     }
 
@@ -47,7 +53,6 @@ public class PropertyServiceImpl implements PropertyService {
         property.setPropertyId(id);
         property.setType(updatedProperty.getType());
         property.setViewCount(updatedProperty.getViewCount());
-
         return modelMapper.map(propertyRepository.save(property), PropertyDto.class);
     }
 
@@ -56,14 +61,12 @@ public class PropertyServiceImpl implements PropertyService {
            propertyRepository.deleteById(id);
     }
 
-    @Override
-    public List<PropertyDto> searchProperty(String city, String state) {
-        return propertyRepository.searchProperty(city, state)
-       .stream().map(property -> modelMapper.map(property, PropertyDto.class))
-                .toList();
-
-
-    }
+//    @Override
+//    public List<PropertyDto> searchProperty(String city, String state) {
+//        return propertyRepository.searchProperty(city, state)
+//       .stream().map(property -> modelMapper.map(property, PropertyDto.class))
+//                .toList();
+//    }
 
     public void addReview(Review review){
         reviewRepository.save(review);
