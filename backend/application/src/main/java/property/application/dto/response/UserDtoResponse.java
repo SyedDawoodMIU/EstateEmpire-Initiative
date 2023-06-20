@@ -1,5 +1,4 @@
-package property.application.dto;
-
+package property.application.dto.response;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -7,13 +6,10 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-public class UserDto {
+public class UserDtoResponse {
 
-    @NotNull(message = "Password cannot be null")
-    private String password;
+    private Long userId;
     private String name;
-    @NotNull(message = "Role cannot be null")
-    private String role;
     @NotNull(message = "email cannot be null")
     private String email;
     private Boolean isDisabled = false;

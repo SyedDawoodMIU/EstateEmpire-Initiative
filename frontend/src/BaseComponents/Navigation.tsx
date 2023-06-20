@@ -3,8 +3,8 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
-import { RootState } from "../store/store";
-import { useAppDispatch, useAppSelector } from "../store/storeHooks";
+import { RootState } from "../store/Store";
+import { useAppDispatch, useAppSelector } from "../store/StoreHooks";
 import { handleLogout } from "../auth/AuthAction";
 import { useNavigate } from "react-router-dom";
 

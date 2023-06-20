@@ -4,8 +4,9 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import property.application.dto.UserDto;
+import property.application.dto.request.UserDto;
 import property.application.dto.response.LoginResponse;
+import property.application.dto.response.UserDtoResponse;
 import property.application.service.UserService;
 
 import java.util.List;
@@ -24,13 +25,13 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserDto update(@RequestBody @Valid UserDto userDto, @PathVariable("id")Long id){
+    public UserDtoResponse update(@RequestBody UserDto userDto, @PathVariable("id")Long id){
         return userService.update(userDto,id);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public List<UserDto> getAllUser() {
+    public List<UserDtoResponse> getAllUser() {
         return userService.findAll();
     }
 
@@ -42,7 +43,7 @@ public class UserController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping("{id}")
-    public UserDto getUserById(@PathVariable("id") Long id) {
+    public UserDtoResponse getUserById(@PathVariable("id") Long id) {
         return userService.getUserById(id);
     }
 
