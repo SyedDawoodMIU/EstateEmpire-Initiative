@@ -12,4 +12,5 @@ public class PropertyDetailsDto {
     private Double rentAmount;
     private Double securityDepositAmount;
     private int yearBuilt;
+    private String description;
 }

@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/authenticate/**").permitAll()
                 .requestMatchers("/properties/**").hasAnyAuthority("ADMIN", "OWNER")
+                .requestMatchers("/file/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement()

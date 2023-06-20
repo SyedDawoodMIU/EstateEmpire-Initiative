@@ -15,5 +15,7 @@ public class PropertyDetails {
     private Double rentAmount;
     private Double securityDepositAmount;
     private int yearBuilt;
+    @Column(length = 1000)
+    private String description;
 
 }
