@@ -8,7 +8,7 @@ import lombok.Data;
 public class PropertyDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private int id;
     private int bedrooms;
     private int bathrooms;
     private int lotSize;

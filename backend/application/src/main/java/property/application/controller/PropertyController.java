@@ -6,6 +6,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import property.application.dto.request.PropertyDtoRequest;
 import property.application.dto.response.PropertyDto;
+import property.application.model.Property;
 import property.application.model.enums.PropertyType;
 import property.application.service.PropertyService;
 
@@ -54,11 +55,27 @@ public class PropertyController {
                 .map(Enum::name).collect(Collectors.toList());
     }
 
-//    @GetMapping("/search")
-//    public ResponseEntity<?> searchProperty(@RequestParam("city") String city, @RequestParam("state") String state){
-//        List<PropertyDto> propertyDto = propertyService.searchProperty(city,state);
-//        return  ResponseEntity.ok(propertyDto);
-//
-//    }
+    @GetMapping("/search")
+  public List<Property> searchPropertyByCriteria(@RequestParam(required = false) String city,
+                                                 @RequestParam(required = false) String state,
+                                                 @RequestParam(required = false) String zipCode,
+                                                 @RequestParam(required = false) String country,
+                                                 @RequestParam(required = false) PropertyType type,
+                                                 @RequestParam(required = false) Integer bedrooms,
+                                                 @RequestParam(required = false) Integer bathrooms,
+                                                 @RequestParam (required = false)Integer lotSize,
+                                                 @RequestParam (required = false)Double rentAmount,
+                                                 @RequestParam (required = false)Integer yearBuilt){
+
+
+
+        // Create a new Property object and set the address property
+        Property property = new Property();
+
+
+        return propertyService.searchPropertyByCriteria(city,state,zipCode,country,type,bedrooms,bathrooms,lotSize,rentAmount,yearBuilt);
+    }
+
+
 
 }
