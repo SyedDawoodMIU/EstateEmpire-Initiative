@@ -1,5 +1,6 @@
 package property.application.service;
 
+import property.application.dto.PropertySearchCriteria;
 import property.application.dto.request.PropertyDtoRequest;
 import property.application.dto.response.PropertyDto;
 import property.application.model.Property;
@@ -14,7 +15,7 @@ public interface PropertyService {
     PropertyDto updateProperty(Long id, PropertyDtoRequest updatedProperty);
     void deleteProperty(Long id);
 
-    List<Property> searchPropertyByCriteria(String city, String state, String zipCode, String country, PropertyType type, int bedrooms, int bathrooms, int lotSize, Double rentAmount, int yearBuilt);
+    List<PropertyDto> searchPropertyByCriteria(PropertySearchCriteria propertySearchCriteria);
 
 }
 

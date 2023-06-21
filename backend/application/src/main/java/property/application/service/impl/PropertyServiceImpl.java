@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import property.application.controller.constants.BaseErrorCode;
 import property.application.dto.PropertyDetailsDto;
+import property.application.dto.PropertySearchCriteria;
 import property.application.dto.request.PropertyDtoRequest;
 import property.application.dto.response.PropertyDto;
 import property.application.exception.BadRequestException;
@@ -32,8 +33,6 @@ public class PropertyServiceImpl implements PropertyService {
     private FileUploadUtil fileUploadUtil;
     @Autowired
     private SearchPropertyByCriteria searchPropertyByCriteria;
-
-
     @Autowired
     ModelMapper modelMapper;
 
@@ -79,24 +78,9 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public List<Property> searchPropertyByCriteria(String city, String state, String zipCode, String country, PropertyType type, int bedrooms, int bathrooms, int lotSize, Double rentAmount, int yearBuilt) {
-        var dtoRequest = new PropertyDetailsDto();
-        var property = new Property();
-        property.setAddress(new Address());
-
-
-        property.getAddress().setCity(city);
-        property.getAddress().setState(state);
-        property.getAddress().setZipCode(zipCode);
-        property.getAddress().setCountry(country);
-        property.setType(type);
-
-        dtoRequest.setBedrooms(bedrooms);
-        dtoRequest.setBathrooms(bathrooms);
-        dtoRequest.setLotSize(lotSize);
-        dtoRequest.setRentAmount(rentAmount);
-        dtoRequest.setYearBuilt(yearBuilt);
-        return searchPropertyByCriteria.findAllByCriteria(dtoRequest,property);
+    public List<PropertyDto> searchPropertyByCriteria(PropertySearchCriteria propertySearchCriteria) {
+        return searchPropertyByCriteria.findAllByCriteria(propertySearchCriteria)
+                .stream().map(property -> modelMapper.map(property, PropertyDto.class)).toList();
 
     }
 
