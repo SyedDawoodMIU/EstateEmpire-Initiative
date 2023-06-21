@@ -5,13 +5,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import property.application.controller.constants.BaseErrorCode;
+import property.application.dto.PropertyDetailsDto;
+import property.application.dto.PropertySearchCriteria;
 import property.application.dto.request.PropertyDtoRequest;
 import property.application.dto.response.PropertyDto;
 import property.application.exception.BadRequestException;
+import property.application.model.Address;
 import property.application.model.Property;
 import property.application.model.Review;
+import property.application.model.enums.PropertyType;
 import property.application.repo.PropertyRepository;
 import property.application.repo.ReviewRepository;
+import property.application.repo.SearchPropertyByCriteria;
 import property.application.service.PropertyService;
 import property.application.util.FileUploadUtil;
 
@@ -26,8 +31,8 @@ public class PropertyServiceImpl implements PropertyService {
     private ReviewRepository reviewRepository;
     @Autowired
     private FileUploadUtil fileUploadUtil;
-
-
+    @Autowired
+    private SearchPropertyByCriteria searchPropertyByCriteria;
     @Autowired
     ModelMapper modelMapper;
 
@@ -72,12 +77,12 @@ public class PropertyServiceImpl implements PropertyService {
            propertyRepository.deleteById(id);
     }
 
-//    @Override
-//    public List<PropertyDto> searchProperty(String city, String state) {
-//        return propertyRepository.searchProperty(city, state)
-//       .stream().map(property -> modelMapper.map(property, PropertyDto.class))
-//                .toList();
-//    }
+    @Override
+    public List<PropertyDto> searchPropertyByCriteria(PropertySearchCriteria propertySearchCriteria) {
+        return searchPropertyByCriteria.findAllByCriteria(propertySearchCriteria)
+                .stream().map(property -> modelMapper.map(property, PropertyDto.class)).toList();
+
+    }
 
     public void addReview(Review review){
         reviewRepository.save(review);
