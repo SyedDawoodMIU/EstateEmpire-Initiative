@@ -43,6 +43,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/authenticate/**").permitAll()
                 .requestMatchers("/users/register").permitAll()
+                .requestMatchers("/users/**").permitAll()
                 .requestMatchers("/properties/**").hasAnyAuthority("ADMIN", "OWNER")
                 .requestMatchers("/file/**").permitAll()
                 .anyRequest().authenticated()
