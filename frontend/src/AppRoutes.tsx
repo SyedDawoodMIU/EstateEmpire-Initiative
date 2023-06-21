@@ -12,6 +12,7 @@ import SellPage from "./pages/sell/SellPage";
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
 import PrivateRoute from "./PrivateRoute";
 import UserGrid from "./pages/admin/Users";
+import MessageContainer from "./components/message/Messages";
 
 export const AppRoutes = () => {
   return (
@@ -21,6 +22,7 @@ export const AppRoutes = () => {
         <Route path="/buy" element={<BuyPage />} />
         <Route path="/sell" element={<SellPage />} />
         <Route path="/admin" element={<UserGrid />} />
+        <Route path="/messages" element={<MessageContainer />} />
       </Routes>
     </Router>
   );
