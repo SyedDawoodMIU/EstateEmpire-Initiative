@@ -1,7 +1,8 @@
 package property.application.mapper;
 
 import org.mapstruct.Mapper;
-import property.application.dto.UserDto;
+import property.application.dto.request.UserDto;
+import property.application.dto.response.UserDtoResponse;
 import property.application.model.User;
 
 import java.util.List;
@@ -11,10 +12,10 @@ public interface UserMapper {
 
     User toEntity(UserDto userDto);
 
-    UserDto toDto(User user);
+    UserDtoResponse toDto(User user);
 
     List<User> toEntityList(List<UserDto> userDtos);
 
-    List<UserDto> toDtoList(List<User> users);
+    List<UserDtoResponse> toDtoList(List<User> users);
 
 }

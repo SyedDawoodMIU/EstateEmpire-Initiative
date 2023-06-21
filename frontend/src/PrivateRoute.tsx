@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { RootState } from "./store/store";
-import { useAppSelector } from "./store/storeHooks";
+import { RootState } from "./store/Store";
+import { useAppSelector } from "./store/StoreHooks";
 
 const PrivateRoute: FC<any> = ({ element }) => {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);

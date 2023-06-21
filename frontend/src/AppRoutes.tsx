@@ -9,31 +9,19 @@ import LoginPage from "./pages/login/LoginPage";
 import RegistrationPage from "./pages/login/RegistrationPage";
 import BuyPage from "./pages/buy/BuyPage";
 import SellPage from "./pages/sell/SellPage";
-import PropertyList from "./components/owner/property/PropertyList";
-import PropertyDetails from "./components/owner/property/PropertyDetails";
-import { iProperty } from "./types/PropertyTypes";
-import OwnerDashboard from "./components/owner/dashboard/OwnerDashboard";
-import PropertyAddForm from "./components/owner/property/PropertyAddForm";
-import { Container } from "react-bootstrap";
+import OwnerDashboard from "./pages/owner/OwnerDashboard";
+import PrivateRoute from "./PrivateRoute";
+import UserGrid from "./pages/admin/Users";
 
 export const AppRoutes = () => {
   return (
-    <Container fluid>
-      <Router>
-        <Routes>
-          <Route path="/dashboard" element={<OwnerDashboard />} />
-          <Route path="/buy" element={<BuyPage />} />
-          <Route path="/sell" element={<SellPage />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegistrationPage />} />
-          <Route path="/owner-dashboard" element={<OwnerDashboard />} />
-          <Route path="/properties/:id" element={<PropertyDetails/>} />
-          <Route path="/properties" element={<PropertyList />} />
-          {/* <Route path="/add-properties" element={<PropertyAddForm title={""} location={""} price={0} imageUrl={""} description={""}/>} /> */}
-          {/* <PrivateRoute exact path="/dashboard" component={DashboardPage} /> */}
-        </Routes>
-      </Router>
-    </Container>
-    
+    <Router>
+      <Routes>
+        <Route path="/dashboard" element={<OwnerDashboard />} />
+        <Route path="/buy" element={<BuyPage />} />
+        <Route path="/sell" element={<SellPage />} />
+        <Route path="/admin" element={<UserGrid />} />
+      </Routes>
+    </Router>
   );
 };

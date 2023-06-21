@@ -42,8 +42,8 @@ management:
       show-details: always
     metrics:
       enabled: 'true'
-  metrics:
-    export:
-      prometheus:
+  prometheus:
+    metrics:
+      export:
         enabled: 'true'
 

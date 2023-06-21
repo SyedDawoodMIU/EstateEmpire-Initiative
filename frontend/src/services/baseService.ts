@@ -74,19 +74,19 @@ const makeRequest = async (
 
 export const get = async (
   url: string,
-  params: any,
-  useSecureClient = false
+  params?: any,
+  useSecureClient = true
 ) => {
   const client = useSecureClient ? apiClientSecure : apiClient;
   return makeRequest(client, "get", url, { params });
 };
 
-export const post = async (url: string, data: any, useSecureClient = false) => {
+export const post = async (url: string, data: any, useSecureClient = true) => {
   const client = useSecureClient ? apiClientSecure : apiClient;
   return makeRequest(client, "post", url, { data });
 };
 
-export const put = async (url: string, data: any, useSecureClient = false) => {
+export const put = async (url: string, data: any, useSecureClient = true) => {
   const client = useSecureClient ? apiClientSecure : apiClient;
   return makeRequest(client, "put", url, { data });
 };
@@ -94,13 +94,13 @@ export const put = async (url: string, data: any, useSecureClient = false) => {
 export const patch = async (
   url: string,
   data: any,
-  useSecureClient = false
+  useSecureClient = true
 ) => {
   const client = useSecureClient ? apiClientSecure : apiClient;
   return makeRequest(client, "patch", url, { data });
 };
 
-export const del = async (url: string, useSecureClient = false) => {
+export const del = async (url: string, useSecureClient = true) => {
   const client = useSecureClient ? apiClientSecure : apiClient;
   return makeRequest(client, "delete", url, {});
 };

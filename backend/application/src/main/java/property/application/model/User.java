@@ -22,6 +22,8 @@ public class User extends AuditEntity {
     @Column(unique = true, nullable = false)
     private String email;
 
+    private Boolean isDisabled = false;
+
     @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinTable(name = "app_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;

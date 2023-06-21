@@ -1,4 +1,4 @@
-import { get } from "./../services/baseService";
+import { get } from "../services/BaseService";
 import { useNavigate } from "react-router-dom";
 import { iUserData } from "../types/UserTypes";
 import { iAuthState } from "./AuthTypes";

@@ -1,13 +1,14 @@
 package property.application.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import property.application.config.securityUser.EmpireUserDetails;
 import property.application.controller.constants.BaseErrorCode;
-import property.application.dto.UserDto;
+import property.application.dto.request.UserDto;
 import property.application.dto.response.LoginResponse;
+import property.application.dto.response.UserDtoResponse;
 import property.application.exception.BadRequestException;
 import property.application.mapper.UserMapper;
 import property.application.repo.RoleRepo;
@@ -15,12 +16,12 @@ import property.application.repo.UserRepo;
 import property.application.service.UserService;
 import property.application.util.JwtUtil;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
@@ -50,7 +51,31 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDtoResponse> findAll() {
         return userMapper.toDtoList(userRepo.findAll());
     }
+
+    @Override
+    public void deleteUser(Long id) {
+        userRepo.deleteById(id);
+    }
+
+    @Override
+    public UserDtoResponse getUserById(Long id){
+        return userMapper.toDto(
+                userRepo.findById(id)
+                        .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found")));
+    }
+
+    @Override
+    public UserDtoResponse update(UserDto userDto, Long id) {
+        var user = userRepo.findById(id)
+                .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found"));
+        user.setEmail(userDto.getEmail());
+        user.setIsDisabled(userDto.getIsDisabled());
+        user.setName(user.getName());
+        userRepo.save(user);
+        return userMapper.toDto(user);
+    }
+
 }

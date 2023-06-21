@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import Navigation from "./baseComponents/Navigation";
 import { AppRoutes } from "./AppRoutes";
-import Navigation from "./BaseComponents/Navigation";
+import { useAppSelector } from "./store/StoreHooks";
+import { RootState } from "./store/Store";
 import { CommonRoutes } from "./CommonRoutes";
-import { RootState } from "./store/store";
-import { useAppSelector } from "./store/storeHooks";
 
 const App = () => {
-  
-  
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
 
   return (
     <div className="container-fluid">
-      
+      {isAuthenticated ? (
         <div>
           <Navigation />
           <AppRoutes />
         </div>
-     
-      
+      ) : (
+        <CommonRoutes />
+      )}
     </div>
   );
 };
 
 export default App;
-
