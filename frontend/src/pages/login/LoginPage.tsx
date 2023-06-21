@@ -1,6 +1,6 @@
 import React, { useState, FormEvent, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAppSelector, useAppDispatch } from "../../store/storeHooks";
+import { useAppSelector, useAppDispatch } from "../../store/StoreHooks";
 import { isTokenExpired, handleLogin } from "../../auth/AuthAction";
 import { Container, Row, Form, Button } from "react-bootstrap";
 import { getToken } from "../../utils/tokenUtils";
@@ -14,22 +14,17 @@ const LoginPage = () => {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (!isTokenExpired()) {
-      navigate("/dashboard");
-    }
-  }, [navigate]);
-
   const login = async (e: FormEvent) => {
     e.preventDefault();
+    navigate("/dashboard");
 
     try {
       dispatch(handleLogin(email, password));
-      navigate("/dashboard");
     } catch (error: any) {
       setError(error.message);
     }
   };
+
 
   return (
     <div>

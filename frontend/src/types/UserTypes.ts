@@ -1,7 +1,8 @@
-
 export interface iUserData {
-    name: string;
-    email: string;
-    password: string;
-    role: 'OWNER' | 'CUSTOMER';
-  }
+  userId?: number;
+  name: string;
+  email: string;
+  password: string;
+  role: "OWNER" | "CUSTOMER";
+  isDisabled?: boolean;
+}

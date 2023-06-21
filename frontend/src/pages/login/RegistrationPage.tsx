@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { iUserData } from "../../types/UserTypes";
 import { isTokenExpired, handleRegistration } from "../../auth/AuthAction";
-import { useAppDispatch } from "../../store/storeHooks";
+import { useAppDispatch } from "../../store/StoreHooks";
 import { Form, Button, Container } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 

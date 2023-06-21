@@ -6,8 +6,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import property.application.config.securityUser.EmpireUserDetails;
 import property.application.controller.constants.BaseErrorCode;
-import property.application.dto.UserDto;
+import property.application.dto.request.UserDto;
 import property.application.dto.response.LoginResponse;
+import property.application.dto.response.UserDtoResponse;
 import property.application.exception.BadRequestException;
 import property.application.mapper.UserMapper;
 import property.application.repo.RoleRepo;
@@ -50,7 +51,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserDto> findAll() {
+    public List<UserDtoResponse> findAll() {
         return userMapper.toDtoList(userRepo.findAll());
     }
 
@@ -60,20 +61,21 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserById(Long id){
+    public UserDtoResponse getUserById(Long id){
         return userMapper.toDto(
                 userRepo.findById(id)
                         .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found")));
     }
 
     @Override
-    public UserDto update(UserDto userDto, Long id) {
-        var updateUser = userMapper.toEntity(userDto);
+    public UserDtoResponse update(UserDto userDto, Long id) {
         var user = userRepo.findById(id)
                 .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found"));
-        user.setUserId(id);
-        userRepo.save(updateUser);
-        return userDto;
+        user.setEmail(userDto.getEmail());
+        user.setIsDisabled(userDto.getIsDisabled());
+        user.setName(user.getName());
+        userRepo.save(user);
+        return userMapper.toDto(user);
     }
 
 }
