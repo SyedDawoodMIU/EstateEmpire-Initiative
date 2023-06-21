@@ -4,10 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import property.application.dto.PropertySearchCriteria;
 import property.application.dto.request.PropertyDtoRequest;
 import property.application.dto.response.PropertyDto;
-import property.application.model.Property;
 import property.application.model.enums.PropertyType;
 import property.application.service.PropertyService;
 
@@ -23,7 +23,7 @@ public class PropertyController {
     private final PropertyService propertyService;
 
     @PostMapping
-    public ResponseEntity<?> save(@ModelAttribute PropertyDtoRequest p) {
+    public ResponseEntity<?> save(@RequestBody PropertyDtoRequest p) {
         return ResponseEntity.ok(propertyService.createProperty(p));
     }
 
@@ -63,5 +63,14 @@ public class PropertyController {
         return propertyService.searchPropertyByCriteria(searchCriteria);
     }
 
+    @PatchMapping("/{id}")
+    public void favoriteProperty(@PathVariable("id") Long propertyId){
+        propertyService.favoriteProperty(propertyId);
+    }
+
+    @GetMapping("/favorite")
+    public List<PropertyDto> getFavoriteList(){
+        return propertyService.favoriteList();
+    }
 
 }

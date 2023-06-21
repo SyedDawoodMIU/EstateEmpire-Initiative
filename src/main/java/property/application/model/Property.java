@@ -6,6 +6,7 @@ import lombok.Data;
 import property.application.model.enums.PropertyType;
 
 import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Data
@@ -30,5 +31,28 @@ public class Property extends AuditEntity {
     @OneToMany(mappedBy = "property")
     @JsonBackReference
     private List<PropertyImage> propertyImage;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @Transient
+    private Boolean isFavorite;
+
+    @ManyToMany(mappedBy = "favoriteProperty")
+    private List<User> users;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Property)) return false;
+        Property property = (Property) o;
+        return propertyId != null && property.propertyId != null && propertyId.equals(property.propertyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyId);
+    }
 
 }
