@@ -4,10 +4,12 @@ import persistConfig from "./PersistConfig";
 
 import authSlice from "../auth/AuthSlice";
 import userSlice from "./UserStore";
+import messageSlice from "./MessageSlice";
 
 const rootReducer = combineReducers({
   auth: authSlice,
   user: userSlice,
+  message: messageSlice,
 });
 
 const persistedReducer = persistReducer(persistConfig, rootReducer);
