@@ -34,10 +34,11 @@ public class UserServiceImpl implements UserService {
     public LoginResponse save(UserDto userDto) {
         var user = userMapper.toEntity(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        if (userDto.getRole().equals("ADMIN")){
+        if (userDto.getRole().equals("ADMIN")) {
             new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Role cannot be set to ADMIN");
         }
-        var role = roleRepo.findByRoleName(userDto.getRole()).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Role not found"));
+        var role = roleRepo.findByRoleName(userDto.getRole())
+                .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Role not found"));
         user.setRoles(Collections.singletonList(role));
         userRepo.save(user);
         return bindResponse(new EmpireUserDetails(user));
@@ -61,21 +62,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDtoResponse getUserById(Long id){
+    public UserDtoResponse getUserById(Long id) {
         return userMapper.toDto(
                 userRepo.findById(id)
-                        .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found")));
+                        .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "User not found")));
     }
 
     @Override
     public UserDtoResponse update(UserDto userDto, Long id) {
         var user = userRepo.findById(id)
-                .orElseThrow(()-> new BadRequestException(BaseErrorCode.VALIDATION_FAILED,"User not found"));
+                .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "User not found"));
         user.setEmail(userDto.getEmail());
         user.setIsDisabled(userDto.getIsDisabled());
         user.setName(user.getName());
         userRepo.save(user);
         return userMapper.toDto(user);
+    }
+
+    @Override
+    public UserDtoResponse getUserByEmail(String email) {
+        return userMapper.toDto(
+                userRepo.findByEmail(email)
+                        .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "User not found")));
     }
 
 }
