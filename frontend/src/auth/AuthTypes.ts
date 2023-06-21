@@ -4,8 +4,3 @@ export interface iAuthState {
   refreshToken: string;
 }
 
-export interface iProperty {
-  id?: number;
-  title: string;
-  price: number;
-}

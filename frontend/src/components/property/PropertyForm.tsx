@@ -14,8 +14,8 @@ const PropertyForm: React.FC<PropertyFormProps> = ({ onSubmit }) => {
 
     // Create a new property object
     const property: iProperty = {
-      title,
-      price,
+      propertyDetails : {
+      },
     };
 
     // Pass the property object to the parent component for submission
