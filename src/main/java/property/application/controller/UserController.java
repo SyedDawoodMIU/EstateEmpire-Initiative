@@ -25,8 +25,8 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public UserDtoResponse update(@RequestBody UserDto userDto, @PathVariable("id")Long id){
-        return userService.update(userDto,id);
+    public UserDtoResponse update(@RequestBody UserDto userDto, @PathVariable("id") Long id) {
+        return userService.update(userDto, id);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -45,6 +45,12 @@ public class UserController {
     @GetMapping("{id}")
     public UserDtoResponse getUserById(@PathVariable("id") Long id) {
         return userService.getUserById(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/email")
+    public UserDtoResponse getUserByEmail(@RequestParam("value") String email) {
+        return userService.getUserByEmail(email);
     }
 
 }
