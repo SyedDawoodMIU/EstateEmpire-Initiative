@@ -17,6 +17,6 @@ public class PropertyDtoRequest {
     private int viewCount;
     private AddressDto address;
     private PropertyDetails propertyDetails;
-    private List<MultipartFile> files;
+    private List<FileDto> files;
 
 }

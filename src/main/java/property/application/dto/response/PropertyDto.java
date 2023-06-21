@@ -16,4 +16,5 @@ public class PropertyDto {
     private AddressDto address;
     private PropertyDetails propertyDetails;
     private List<PropertyImageDto> propertyImage;
+    private Boolean isFavorite;
 }
