@@ -1,26 +1,22 @@
-package property.application.dto;
-
+package property.application.dto.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import property.application.dto.UserDto;
 import property.application.model.User;
-
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
-public class MessageDto {
+public class UserMessageDto {
 
-    public MessageDto(){}
+    public UserMessageDto(){}
 
     @NotNull(message = "Message cannot be null")
-    private String content;
+    private String message;
 
 //    private UserDto receiver;
 
     private UserDto sender;
-
-    private Date createdAt;
 
 
 }

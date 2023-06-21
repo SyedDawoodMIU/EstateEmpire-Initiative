@@ -3,8 +3,9 @@ package property.application.service.impl;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import property.application.dto.MessageDto;
-import property.application.exception.BadRequestException;
+import property.application.dto.request.MessageDtoRequest;
 import property.application.model.Message;
+import property.application.model.Property;
 import property.application.model.User;
 import property.application.repo.MessageRepo;
 import property.application.repo.UserRepo;
@@ -22,36 +23,37 @@ public class MessageServiceImpl implements MessageService {
 
     private UserRepo userRepo;
 
-    public MessageServiceImpl(MessageRepo messageRepo, ModelMapper modelMapper, UserRepo userRepo){
+    public MessageServiceImpl(MessageRepo messageRepo, ModelMapper modelMapper, UserRepo userRepo) {
         this.messageRepo = messageRepo;
         this.modelMapper = modelMapper;
         this.userRepo = userRepo;
     }
 
-
     @Override
     public List<MessageDto> getMessagesByReceiverId(long receiverId) {
         Optional<User> receiver = userRepo.findById(receiverId);
-        List<MessageDto> messages = null;
+        List<MessageDto> messages1 = null;
         if (receiver.isEmpty()) {
             System.out.println("Error");
         } else {
-            List<Message> messages1 = messageRepo.findAllByReceiver(receiver.get());
-            messages = messages1.stream().map((message) -> modelMapper.map(message, MessageDto.class)).collect(Collectors.toList());
+            List<Message> messages2 = messageRepo.findAllByReceiver(receiver.get());
+            messages1 = messages2.stream().map((message) -> modelMapper.map(message, MessageDto.class)).collect(Collectors.toList());
+//            System.out.println(messages);
         }
-        return messages;
+        return messages1;
     }
 
     @Override
-    public void sendMessage(Long senderId, Long receiverId, String content) {
-        Optional<User> receiver = userRepo.findById(receiverId);
-        Optional<User> sender = userRepo.findById(senderId);
-        if(receiver.isEmpty() || sender.isEmpty()){
+    public void sendMessage(MessageDtoRequest messageDtoRequest) {
+        Optional<User> sender = userRepo.findById(messageDtoRequest.getSenderId());
+        Optional<User> receiver = userRepo.findById(messageDtoRequest.getReceiverId());
+        if (receiver.isEmpty() || sender.isEmpty()) {
             System.out.println("Bad Request");
 //            Exception exception1 = new Exception("Bad Request");
 //            throw exception1;
-        }else{
-            Message newMessage = new Message(sender, receiver, content);
+        } else {
+//            Message message = modelMapper.map(messageDtoRequest, Message.class);
+            Message newMessage = new Message(sender.get(), receiver.get(), messageDtoRequest.getMessage());
             messageRepo.save(newMessage);
         }
 
