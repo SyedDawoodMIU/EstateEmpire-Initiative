@@ -2,8 +2,10 @@ package property.application.service.impl;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+import property.application.controller.constants.BaseErrorCode;
 import property.application.dto.MessageDto;
 import property.application.dto.request.MessageDtoRequest;
+import property.application.exception.BadRequestException;
 import property.application.model.Message;
 import property.application.model.Property;
 import property.application.model.User;
@@ -30,11 +32,11 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageDto> getMessagesByReceiverId(long receiverId) {
+    public List<MessageDto> getMessagesByReceiverId(long receiverId){
         Optional<User> receiver = userRepo.findById(receiverId);
         List<MessageDto> messages1 = null;
         if (receiver.isEmpty()) {
-            System.out.println("Error");
+            throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Receiver Id not found");
         } else {
             List<Message> messages2 = messageRepo.findAllByReceiver(receiver.get());
             messages1 = messages2.stream().map((message) -> modelMapper.map(message, MessageDto.class)).collect(Collectors.toList());
@@ -48,9 +50,7 @@ public class MessageServiceImpl implements MessageService {
         Optional<User> sender = userRepo.findById(messageDtoRequest.getSenderId());
         Optional<User> receiver = userRepo.findById(messageDtoRequest.getReceiverId());
         if (receiver.isEmpty() || sender.isEmpty()) {
-            System.out.println("Bad Request");
-//            Exception exception1 = new Exception("Bad Request");
-//            throw exception1;
+            throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Incorrect/Missing receiverId or senderId!");
         } else {
 //            Message message = modelMapper.map(messageDtoRequest, Message.class);
             Message newMessage = new Message(sender.get(), receiver.get(), messageDtoRequest.getMessage());
