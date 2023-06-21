@@ -35,7 +35,6 @@ public class UserServiceImpl implements UserService {
         var user = userMapper.toEntity(userDto);
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.setIsDisabled(Boolean.FALSE);
-        if (userDto.getRole().equals("ADMIN")){
         if (userDto.getRole().equals("ADMIN")) {
             new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Role cannot be set to ADMIN");
         }
