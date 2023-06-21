@@ -1,5 +1,5 @@
 export interface iAuthState {
-  authenticated?: boolean;
+  isAuthenticated?: boolean;
   accessToken: string;
   refreshToken: string;
 }

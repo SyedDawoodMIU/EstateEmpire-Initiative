@@ -3,8 +3,17 @@ import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import NavDropdown from "react-bootstrap/NavDropdown";
+import { RootState } from "../store/store";
+import { useAppDispatch, useAppSelector } from "../store/storeHooks";
+import { handleLogout } from "../auth/AuthAction";
+import { useNavigate } from "react-router-dom";
 
 function Navigation() {
+  const dispatch = useAppDispatch();
+  const isAuthenticated = useAppSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
   return (
     <Navbar expand="lg" bg="light" variant="light">
       <Container>
@@ -30,8 +39,19 @@ function Navigation() {
             <Nav.Link href="#link">Blog</Nav.Link>
           </Nav>
           <Nav className="ml-auto">
-            <Nav.Link href="#link">Sign In</Nav.Link>
-            <Nav.Link href="#link">Register</Nav.Link>
+            <Nav.Link
+              href="login"
+              onClick={
+                isAuthenticated
+                  ? () => {
+                      dispatch(handleLogout());
+                    }
+                  : undefined
+              }
+            >
+              Sign {isAuthenticated ? "Out" : "In"}
+            </Nav.Link>
+            {isAuthenticated ?? <Nav.Link href="#link">Register</Nav.Link>}
           </Nav>
         </Navbar.Collapse>
       </Container>

@@ -12,13 +12,12 @@ import SellPage from "./pages/sell/SellPage";
 import OwnerDashboard from "./pages/owner/OwnerDashboard";
 import PrivateRoute from "./PrivateRoute";
 
-export const AppRoutes = () => {
+export const CommonRoutes = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/dashboard" element={<OwnerDashboard />} />
-        <Route path="/buy" element={<BuyPage />} />
-        <Route path="/sell" element={<SellPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/register" element={<RegistrationPage />} />
       </Routes>
     </Router>
   );

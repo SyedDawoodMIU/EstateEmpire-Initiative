@@ -18,9 +18,7 @@ const AuthService = {
         password,
       });
 
-      // Assuming the server returns an access token
-      const { access_token } = response.data;
-      return access_token;
+      return response.data;
     } catch (error) {
       throw new Error("Failed to login. Please try again.");
     }
@@ -65,8 +63,5 @@ const AuthService = {
     }
   },
 };
-
-
-
 
 export default AuthService;

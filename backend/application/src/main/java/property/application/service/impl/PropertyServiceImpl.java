@@ -5,15 +5,18 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import property.application.controller.constants.BaseErrorCode;
-import property.application.dto.PropertyDto;
+import property.application.dto.request.PropertyDtoRequest;
+import property.application.dto.response.PropertyDto;
 import property.application.exception.BadRequestException;
 import property.application.model.Property;
 import property.application.model.Review;
 import property.application.repo.PropertyRepository;
 import property.application.repo.ReviewRepository;
 import property.application.service.PropertyService;
+import property.application.util.FileUploadUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PropertyServiceImpl implements PropertyService {
@@ -21,6 +24,8 @@ public class PropertyServiceImpl implements PropertyService {
     private  PropertyRepository propertyRepository;
     @Autowired
     private ReviewRepository reviewRepository;
+    @Autowired
+    private FileUploadUtil fileUploadUtil;
 
 
     @Autowired
@@ -41,19 +46,25 @@ public class PropertyServiceImpl implements PropertyService {
     }
 
     @Override
-    public PropertyDto createProperty(PropertyDto propertyDto) {
+    public PropertyDto createProperty(PropertyDtoRequest propertyDto) {
         Property property = modelMapper.map(propertyDto, Property.class);
         property.setViewCount(0);
-        return modelMapper.map(propertyRepository.save(property), PropertyDto.class);
+        var saved = propertyRepository.save(property);
+        propertyDto.getFiles()
+                .forEach(file -> fileUploadUtil.uploadFile(file, saved.getPropertyId()));
+        return modelMapper.map(saved, PropertyDto.class);
     }
 
     @Override
-    public PropertyDto updateProperty(Long id, PropertyDto updatedProperty) {
+    public PropertyDto updateProperty(Long id, PropertyDtoRequest updatedProperty) {
         Property property = modelMapper.map(updatedProperty, Property.class);
         property.setPropertyId(id);
         property.setType(updatedProperty.getType());
         property.setViewCount(updatedProperty.getViewCount());
-        return modelMapper.map(propertyRepository.save(property), PropertyDto.class);
+        var saved = propertyRepository.save(property);
+        updatedProperty.getFiles()
+                .forEach(file -> fileUploadUtil.uploadFile(file, saved.getPropertyId()));
+        return modelMapper.map(saved, PropertyDto.class);
     }
 
     @Override
