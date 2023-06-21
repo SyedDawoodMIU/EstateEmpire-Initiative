@@ -3,6 +3,7 @@ package property.application.dto;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import property.application.dto.response.UserDtoResponse;
 import property.application.model.User;
 
 import java.util.Date;
@@ -18,7 +19,7 @@ public class MessageDto {
 
 //    private UserDto receiver;
 
-    private UserDto sender;
+    private UserDtoResponse sender;
 
     private Date createdAt;
 

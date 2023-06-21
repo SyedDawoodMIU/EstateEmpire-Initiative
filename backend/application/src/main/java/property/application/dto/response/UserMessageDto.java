@@ -2,8 +2,6 @@ package property.application.dto.response;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import property.application.dto.UserDto;
-import property.application.model.User;
 
 @Data
 @AllArgsConstructor
@@ -16,7 +14,7 @@ public class UserMessageDto {
 
 //    private UserDto receiver;
 
-    private UserDto sender;
+    private UserDtoResponse sender;
 
 
 }
