@@ -6,6 +6,7 @@ import property.application.model.Offer;
 import java.util.List;
 
 public interface OfferRepository extends JpaRepository<Offer, Long> {
-    List<Offer> findAllPropertyId(Long id);
+   List<Offer> findAllByPropertyPropertyId(Long propertyId);
+
 
 }

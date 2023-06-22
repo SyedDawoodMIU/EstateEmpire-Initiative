@@ -80,7 +80,7 @@
             @Override
 
             public List<OfferResponseDto> getAllOffersByPropertyId(Long Id){
-                List<Offer> offers = offerRepository.findAllPropertyId(Id);
+                List<Offer> offers = offerRepository.findAllByPropertyPropertyId(Id);
                 return offers.stream().map(offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
             }
 
