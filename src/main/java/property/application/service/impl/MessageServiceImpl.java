@@ -32,15 +32,20 @@ public class MessageServiceImpl implements MessageService {
     }
 
     @Override
-    public List<MessageDto> getMessagesByReceiverId(long receiverId){
+    public List<MessageDto> getMessagesByReceiverId(long receiverId) {
         Optional<User> receiver = userRepo.findById(receiverId);
         List<MessageDto> messages1 = null;
         if (receiver.isEmpty()) {
             throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Receiver Id not found");
         } else {
             List<Message> messages2 = messageRepo.findAllByReceiver(receiver.get());
-            messages1 = messages2.stream().map((message) -> modelMapper.map(message, MessageDto.class)).collect(Collectors.toList());
-//            System.out.println(messages);
+            List<Message> messages3 = messageRepo.findAllBySender(receiver.get());
+            messages2.addAll(messages3);
+            messages1 = messages2.stream()
+                    .distinct() // Remove duplicate messages based on equals() and hashCode() methods
+                    .map(message -> modelMapper.map(message, MessageDto.class))
+                    .collect(Collectors.toList());
+            // System.out.println(messages);
         }
         return messages1;
     }
@@ -52,7 +57,7 @@ public class MessageServiceImpl implements MessageService {
         if (receiver.isEmpty() || sender.isEmpty()) {
             throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Incorrect/Missing receiverId or senderId!");
         } else {
-//            Message message = modelMapper.map(messageDtoRequest, Message.class);
+            // Message message = modelMapper.map(messageDtoRequest, Message.class);
             Message newMessage = new Message(sender.get(), receiver.get(), messageDtoRequest.getMessage());
             messageRepo.save(newMessage);
         }

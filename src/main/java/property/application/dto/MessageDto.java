@@ -20,6 +20,7 @@ public class MessageDto {
 //    private UserDto receiver;
 
     private UserDtoResponse sender;
+    private UserDtoResponse receiver;
 
     private Date createdAt;
 
