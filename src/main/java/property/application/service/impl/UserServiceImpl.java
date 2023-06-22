@@ -1,11 +1,15 @@
 package property.application.service.impl;
 
+import freemarker.template.TemplateException;
+import jakarta.mail.MessagingException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import property.application.config.securityUser.EmpireUserDetails;
 import property.application.controller.constants.BaseErrorCode;
+import property.application.dto.EmailDetails;
 import property.application.dto.request.UserDto;
 import property.application.dto.response.LoginResponse;
 import property.application.dto.response.UserDtoResponse;
@@ -14,14 +18,19 @@ import property.application.mapper.UserMapper;
 import property.application.repo.RoleRepo;
 import property.application.repo.UserRepo;
 import property.application.service.UserService;
+import property.application.util.EmailUtil;
 import property.application.util.JwtUtil;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
+@Slf4j
 public class UserServiceImpl implements UserService {
 
     private final UserRepo userRepo;
@@ -29,6 +38,7 @@ public class UserServiceImpl implements UserService {
     private final RoleRepo roleRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailUtil emailUtil;
 
     @Override
     public LoginResponse save(UserDto userDto) {
@@ -43,6 +53,29 @@ public class UserServiceImpl implements UserService {
         user.setRoles(Collections.singletonList(role));
         userRepo.save(user);
         return bindResponse(new EmpireUserDetails(user));
+    }
+
+    void sendEmail(UserDto userDto){
+        ExecutorService emailExecutor = Executors.newSingleThreadExecutor();
+        emailExecutor.execute(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    EmailDetails emailDetails = new EmailDetails();
+                    emailDetails.setSubject("Welcome to Estate Empire");
+                    emailDetails.setRecipient(userDto.getEmail());
+                    emailDetails.setName(userDto.getName());
+                    emailUtil.sendEmail(emailDetails);
+                } catch (IOException e) {
+                    log.error("failed", e);
+                } catch (MessagingException e) {
+                    throw new RuntimeException(e);
+                } catch (TemplateException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        });
+        emailExecutor.shutdown();
     }
 
     LoginResponse bindResponse(EmpireUserDetails userDetails) {
