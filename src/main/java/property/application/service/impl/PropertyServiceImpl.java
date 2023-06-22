@@ -15,7 +15,6 @@ import property.application.model.Review;
 import property.application.repo.*;
 import property.application.service.PropertyService;
 import property.application.util.Base64FileUpload;
-import property.application.util.FileUploadUtil;
 import property.application.util.LoggedinUserUtil;
 
 import java.util.List;
@@ -29,8 +28,6 @@ public class PropertyServiceImpl implements PropertyService {
     private final PropertyRepository propertyRepository;
 
     private final ReviewRepository reviewRepository;
-
-    private final FileUploadUtil fileUploadUtil;
 
     private final SearchPropertyByCriteria searchPropertyByCriteria;
 
@@ -51,9 +48,12 @@ public class PropertyServiceImpl implements PropertyService {
     @Override
     public PropertyDto getPropertyById(Long id) {
         var property = propertyRepository.findById(id).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property not found"));
+        var user = loggedinUserUtil.getCurrentUser();
         if (!property.getOwner().getEmail().equals(loggedinUserUtil.getUserEmail())) {
             property.setViewCount(property.getViewCount() + 1);
         }
+        property.setIsFavorite(property.getUsers().contains(user));
+        property.setIsOwner(property.getOwner().equals(user));
         return modelMapper.map(propertyRepository.save(property), PropertyDto.class);
     }
 
@@ -79,11 +79,21 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public PropertyDto updateProperty(Long id, PropertyDtoRequest updatedProperty) {
+        var exis = propertyRepository.findById(id).orElseThrow(()->new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property not found"));
+        var loggedIn = loggedinUserUtil.getCurrentUser();
+
+        if (!exis.getOwner().equals(loggedIn)){
+            throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "You cannot edit this property");
+        }
+
         Property property = modelMapper.map(updatedProperty, Property.class);
         property.setPropertyId(id);
         property.setType(updatedProperty.getType());
         property.setViewCount(updatedProperty.getViewCount());
+        property.setOwner(loggedIn);
+
         var saved = propertyRepository.save(property);
+
         if (updatedProperty.getFiles() != null) {
             updatedProperty.getFiles().forEach(file -> {
                 var downloadUrl = base64FileUpload.uploadBase64(file.getBase64Content(), saved.getPropertyId(), file.getFileName());
@@ -100,6 +110,10 @@ public class PropertyServiceImpl implements PropertyService {
 
     @Override
     public void deleteProperty(Long id) {
+        var exis = propertyRepository.findById(id).orElseThrow(()->new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property not found"));
+        if (!exis.getOwner().equals(loggedinUserUtil.getCurrentUser())){
+            new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Access denied");
+        }
         propertyRepository.deleteById(id);
     }
 
@@ -109,6 +123,7 @@ public class PropertyServiceImpl implements PropertyService {
         var user = loggedinUserUtil.getCurrentUser();
         data.forEach(property -> {
             property.setIsFavorite(property.getUsers().contains(user));
+            property.setIsOwner(property.getOwner().equals(user));
         });
         return data.stream().map(property -> modelMapper.map(property, PropertyDto.class)).toList();
     }
