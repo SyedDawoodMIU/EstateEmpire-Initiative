@@ -3,6 +3,8 @@ package property.application.util;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import property.application.repo.UserRepo;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +23,8 @@ public class JwtUtil {
 
     @Autowired
     UserDetailsService userDetailsService;
+    @Autowired
+    UserRepo userRepo;
     private final String secret = "top-secret";
     private final long expiration = 5 * 60 * 60 * 60;
     //     private final long expiration = 5;
@@ -58,8 +62,9 @@ public class JwtUtil {
 
     public String generateToken(UserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
-        claims.put("roles",userDetails.getAuthorities());
-
+        claims.put("role",userDetails.getAuthorities().stream().findFirst().get());
+        claims.put("userName",userDetails.getUsername());
+        claims.put("userId",userRepo.findByEmail(userDetails.getUsername()).get().getUserId());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 

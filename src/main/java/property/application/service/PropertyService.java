@@ -17,5 +17,8 @@ public interface PropertyService {
 
     List<PropertyDto> searchPropertyByCriteria(PropertySearchCriteria propertySearchCriteria);
 
+    void favoriteProperty(Long id);
+
+    List<PropertyDto> favoriteList();
 }
 
