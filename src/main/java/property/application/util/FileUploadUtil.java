@@ -21,8 +21,6 @@ import property.application.repo.PropertyImageRepo;
 import property.application.repo.PropertyRepository;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.nio.file.Files;
@@ -31,7 +29,6 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,17 +47,6 @@ public class FileUploadUtil {
                 .stream()
                 .map(file -> uploadFile(file,id))
                 .collect(Collectors.toList());
-    }
-
-    public void uploadBase64(String baseEncoded, Long id, String fileName) throws IOException {
-        byte[] bytes = Base64.getMimeDecoder().decode(baseEncoded);
-
-        String timestamp = LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmssSSS"));
-        String extension = fileName.substring(fileName.lastIndexOf(".") + 1);
-        String newFileName = "image-" + timestamp + "." + extension;
-        getUploadPath(id);
-        String targetLocation = userHome + ApplicationConstants.FILE_UPLOAD_DIR + File.separator + id + File.separator + newFileName;
-        new FileOutputStream(targetLocation).write(bytes);
     }
 
     public UploadFileResponse uploadFile(MultipartFile file, Long id) {
