@@ -15,7 +15,6 @@ public interface OfferService {
 
     OfferResponseDto rejectOffer(Long id);
 
-
     List<OfferResponseDto> getAllOffersByPropertyId(Long id);
 
     void deleteOffer(Long id);

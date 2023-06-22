@@ -56,38 +56,36 @@ public class OfferServiceImpl implements OfferService {
     @Override
 
     public OfferResponseDto acceptOffer(Long id) {
+        User user = loggedinUserUtil.getCurrentUser();
         Offer offer = offerRepository.findById(id).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
-        User user = userRepo.findById(offer.getCustomer().getUserId()).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "User not found"));
-        if (user != null) {
-            offer.setOfferStatus(OfferStatus.ACCEPTED);
-            offerRepository.save(offer);
-            Property property = offer.getProperty();
-            property.setStatus(PropertyStatus.CONTINGENT);
-            propertyRepository.save(property);
-            return modelMapper.map(offer, OfferResponseDto.class);
+        Property property = offer.getProperty();
+        if (!property.getOwner().equals(user)){
+           throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Only owner can accept an offer");
         }
-        return null;
+        offer.setOfferStatus(OfferStatus.ACCEPTED);
+        offerRepository.save(offer);
+        property.setStatus(PropertyStatus.CONTINGENT);
+        propertyRepository.save(property);
+        return modelMapper.map(offer, OfferResponseDto.class);
     }
 
     @Override
     public OfferResponseDto rejectOffer(Long id) {
         Offer offer = offerRepository.findById(id).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
-        User user = userRepo.findById(offer.getCustomer().getUserId()).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "User not found"));
-        if (user == null) {
-            Property property = offer.getProperty();
-            if (property.getStatus().equals(PropertyStatus.CONTINGENT)) {
-                throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property is already contingent");
-            }
-            offer.setOfferStatus(OfferStatus.REJECTED);
-            property.setStatus(PropertyStatus.AVAILABLE);
-            offerRepository.save(offer);
-            return modelMapper.map(offer, OfferResponseDto.class);
+        Property property = offer.getProperty();
+        if (!offer.getProperty().getOwner().equals(loggedinUserUtil.getCurrentUser())){
+            throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Only owner can accept an offer");
         }
-        return null;
+        if (property.getStatus().equals(PropertyStatus.CONTINGENT)) {
+            throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property is already contingent");
+        }
+        offer.setOfferStatus(OfferStatus.REJECTED);
+        property.setStatus(PropertyStatus.AVAILABLE);
+        offerRepository.save(offer);
+        return modelMapper.map(offer, OfferResponseDto.class);
     }
 
     @Override
-
     public List<OfferResponseDto> getAllOffersByPropertyId(Long Id) {
         List<Offer> offers = offerRepository.findAllByPropertyPropertyId(Id);
         return offers.stream().map(offer -> modelMapper.map(offer, OfferResponseDto.class)).toList();
@@ -101,7 +99,8 @@ public class OfferServiceImpl implements OfferService {
         if (offer.getProperty().getOwner().equals(user)) {
             offerRepository.delete(offer);
         }
-        if (property.getStatus().equals(PropertyStatus.CONTINGENT)) {
+        if (property.getStatus().equals(PropertyStatus.CONTINGENT) ||
+                property.getStatus().equals(PropertyStatus.PENDING)) {
             throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Property can not be deleted");
         } else {
             offerRepository.delete(offer);

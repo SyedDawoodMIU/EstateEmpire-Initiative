@@ -21,13 +21,13 @@ public class OfferController {
         return offerService.makeOffer(offerDto);
     }
 
-    @PostMapping("/accept")
-    public OfferResponseDto acceptOffer(@RequestBody Long id) {
+    @PostMapping("/accept/{id}")
+    public OfferResponseDto acceptOffer(@PathVariable Long id) {
         return offerService.acceptOffer(id);
     }
 
-    @PostMapping("/reject")
-    public OfferResponseDto rejectOffer(@RequestBody Long id) {
+    @PostMapping("/reject/{id}")
+    public OfferResponseDto rejectOffer(@PathVariable Long id) {
         return offerService.rejectOffer(id);
     }
 
