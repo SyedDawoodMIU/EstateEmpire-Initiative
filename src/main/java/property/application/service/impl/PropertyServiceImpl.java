@@ -1,48 +1,46 @@
 package property.application.service.impl;
 
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import property.application.controller.constants.BaseErrorCode;
-import property.application.dto.PropertyDetailsDto;
 import property.application.dto.PropertySearchCriteria;
 import property.application.dto.request.PropertyDtoRequest;
 import property.application.dto.response.PropertyDto;
 import property.application.exception.BadRequestException;
-import property.application.model.Address;
 import property.application.model.Property;
+import property.application.model.PropertyImage;
 import property.application.model.Review;
-import property.application.model.enums.PropertyType;
-import property.application.repo.PropertyRepository;
-import property.application.repo.ReviewRepository;
-import property.application.repo.SearchPropertyByCriteria;
-import property.application.repo.UserRepo;
+import property.application.repo.*;
 import property.application.service.PropertyService;
-import property.application.util.Base64Utils;
+import property.application.util.Base64FileUpload;
 import property.application.util.FileUploadUtil;
 import property.application.util.LoggedinUserUtil;
 
-import java.io.IOException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
+@RequiredArgsConstructor
 public class PropertyServiceImpl implements PropertyService {
-    @Autowired
-    ModelMapper modelMapper;
-    @Autowired
-    private PropertyRepository propertyRepository;
-    @Autowired
-    private ReviewRepository reviewRepository;
-    @Autowired
-    private FileUploadUtil fileUploadUtil;
-    @Autowired
-    private SearchPropertyByCriteria searchPropertyByCriteria;
-    @Autowired
-    private LoggedinUserUtil loggedinUserUtil;
-    @Autowired
-    private UserRepo userRepo;
+
+    private final ModelMapper modelMapper;
+
+    private final PropertyRepository propertyRepository;
+
+    private final ReviewRepository reviewRepository;
+
+    private final FileUploadUtil fileUploadUtil;
+
+    private final SearchPropertyByCriteria searchPropertyByCriteria;
+
+    private final LoggedinUserUtil loggedinUserUtil;
+
+    private final UserRepo userRepo;
+
+    private final Base64FileUpload base64FileUpload;
+
+    private final PropertyImageRepo propertyImageRepo;
 
     @Override
     @Transactional
@@ -67,12 +65,13 @@ public class PropertyServiceImpl implements PropertyService {
         var saved = propertyRepository.save(property);
         if (propertyDto.getFiles() != null) {
             propertyDto.getFiles().forEach(file -> {
-                try {
-                    fileUploadUtil.uploadBase64(file.getBase64Content(), saved.getPropertyId(), file.getFileName());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                var downloadUrl = base64FileUpload.uploadBase64(file.getBase64Content(), saved.getPropertyId(), file.getFileName());
 
+                var image = PropertyImage.builder()
+                        .property(saved)
+                        .downloadURL(downloadUrl)
+                        .build();
+                propertyImageRepo.save(image);
             });
         }
         return modelMapper.map(saved, PropertyDto.class);
@@ -87,11 +86,13 @@ public class PropertyServiceImpl implements PropertyService {
         var saved = propertyRepository.save(property);
         if (updatedProperty.getFiles() != null) {
             updatedProperty.getFiles().forEach(file -> {
-                try {
-                    fileUploadUtil.uploadFile(Base64Utils.convertBase64ToMultipartFile(file.getBase64Content()), saved.getPropertyId());
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+                var downloadUrl = base64FileUpload.uploadBase64(file.getBase64Content(), saved.getPropertyId(), file.getFileName());
+
+                var image = PropertyImage.builder()
+                        .property(saved)
+                        .downloadURL(downloadUrl)
+                        .build();
+                propertyImageRepo.save(image);
             });
         }
         return modelMapper.map(saved, PropertyDto.class);
@@ -107,7 +108,7 @@ public class PropertyServiceImpl implements PropertyService {
         var data = searchPropertyByCriteria.findAllByCriteria(propertySearchCriteria);
         var user = loggedinUserUtil.getCurrentUser();
         data.forEach(property -> {
-                property.setIsFavorite(property.getUsers().contains(user));
+            property.setIsFavorite(property.getUsers().contains(user));
         });
         return data.stream().map(property -> modelMapper.map(property, PropertyDto.class)).toList();
     }
