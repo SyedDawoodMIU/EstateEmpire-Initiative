@@ -34,7 +34,7 @@ public class Property extends AuditEntity {
     @OneToOne(cascade = CascadeType.ALL)
     private Address address;
 
-    @OneToMany(mappedBy = "property")
+    @OneToMany(mappedBy = "property", cascade = CascadeType.REMOVE)
     @JsonBackReference
     private List<PropertyImage> propertyImage;
 
@@ -44,6 +44,9 @@ public class Property extends AuditEntity {
 
     @Transient
     private Boolean isFavorite;
+
+    @Transient
+    private Boolean isOwner;
 
     @ManyToMany(mappedBy = "favoriteProperty")
     private List<User> users;

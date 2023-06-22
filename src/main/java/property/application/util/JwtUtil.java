@@ -26,14 +26,8 @@ public class JwtUtil {
     @Autowired
     UserRepo userRepo;
     private final String secret = "top-secret";
-    private final long expiration = 5 * 60 * 60 * 60;
-    //     private final long expiration = 5;
-    private final long refreshExpiration = 5 * 60 * 60 * 60 * 60;
-
-    // this wil extract a claim from a token, its used in the methods above to get the username and date
-    // TODO When this detects the access token is expired it will throw and exception.
-    //  handle the exception and do not return null
-
+    private final long expiration = 5 * 60 * 60 * 60 * 60;
+     private final long refreshExpiration = 5 * 60 * 60 * 60 * 60 * 60;
 
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);

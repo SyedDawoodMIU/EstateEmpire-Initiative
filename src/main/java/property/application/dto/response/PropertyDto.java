@@ -17,4 +17,5 @@ public class PropertyDto {
     private PropertyDetails propertyDetails;
     private List<PropertyImageDto> propertyImage;
     private Boolean isFavorite;
+    private Boolean isOwner;
 }
