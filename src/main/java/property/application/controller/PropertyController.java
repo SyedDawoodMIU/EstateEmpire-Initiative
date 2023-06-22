@@ -27,13 +27,6 @@ public class PropertyController {
         return ResponseEntity.ok(propertyService.createProperty(p));
     }
 
-//    @GetMapping
-//    public ResponseEntity<?> getAllProperty() {
-//        List<PropertyDto> propertyDto = propertyService.getAllProperties();
-//        return ResponseEntity.ok(propertyDto);
-//
-//    }
-
     @GetMapping("/{id}")
     public ResponseEntity<?> getPropertyById(@PathVariable("id") Long id) {
         PropertyDto propertyDto = propertyService.getPropertyById(id);

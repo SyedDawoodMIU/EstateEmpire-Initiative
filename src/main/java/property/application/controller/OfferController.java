@@ -17,27 +17,29 @@ public class OfferController {
     private OfferService offerService;
 
     @PostMapping
-        public OfferDto save(@RequestBody OfferDto offerDto) {
-         return offerService.makeOffer(offerDto);
+    public OfferDto save(@RequestBody OfferDto offerDto) {
+        return offerService.makeOffer(offerDto);
     }
-    @PostMapping("/accept")
-    public OfferResponseDto acceptOffer(@RequestBody Long id){
+
+    @PostMapping("/accept/{id}")
+    public OfferResponseDto acceptOffer(@PathVariable Long id) {
         return offerService.acceptOffer(id);
     }
-    @PostMapping("/reject")
-    public OfferResponseDto rejectOffer(@RequestBody Long id){
+
+    @PostMapping("/reject/{id}")
+    public OfferResponseDto rejectOffer(@PathVariable Long id) {
         return offerService.rejectOffer(id);
     }
 
     @GetMapping("/{propertyId}")
-    public List<OfferResponseDto> getAllOffers(@PathVariable Long propertyId){
+    public List<OfferResponseDto> getAllOffers(@PathVariable Long propertyId) {
         return offerService.getAllOffersByPropertyId(propertyId);
     }
+
     @DeleteMapping("/{id}")
-    public void deleteOffer(@PathVariable Long id){
+    public void deleteOffer(@PathVariable Long id) {
         offerService.deleteOffer(id);
     }
-
 
 
 }
