@@ -44,6 +44,7 @@ public class MessageServiceImpl implements MessageService {
             messages1 = messages2.stream()
                     .distinct() // Remove duplicate messages based on equals() and hashCode() methods
                     .map(message -> modelMapper.map(message, MessageDto.class))
+                    .sorted((m1, m2) -> m1.getCreatedAt().compareTo(m2.getCreatedAt()))
                     .collect(Collectors.toList());
             // System.out.println(messages);
         }

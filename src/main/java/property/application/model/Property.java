@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.Data;
 import property.application.model.enums.PropertyType;
+import property.application.model.enums.PropStatus;
+import property.application.model.enums.PropertyStatus;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,6 +20,10 @@ public class Property extends AuditEntity {
 
     @Enumerated(EnumType.STRING)
     private PropertyType type;
+    @Enumerated(EnumType.STRING)
+    private PropertyStatus status;
+
+
 
     private int viewCount;
 
@@ -57,5 +63,7 @@ public class Property extends AuditEntity {
     public int hashCode() {
         return Objects.hash(propertyId);
     }
+
+
 
 }
