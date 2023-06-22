@@ -12,6 +12,7 @@ import property.application.exception.BadRequestException;
 import property.application.model.Property;
 import property.application.model.PropertyImage;
 import property.application.model.Review;
+import property.application.model.enums.PropertyStatus;
 import property.application.repo.*;
 import property.application.service.PropertyService;
 import property.application.util.Base64FileUpload;
@@ -62,6 +63,7 @@ public class PropertyServiceImpl implements PropertyService {
         Property property = modelMapper.map(propertyDto, Property.class);
         property.setViewCount(0);
         property.setOwner(loggedinUserUtil.getCurrentUser());
+        property.setStatus(PropertyStatus.AVAILABLE);
         var saved = propertyRepository.save(property);
         if (propertyDto.getFiles() != null) {
             propertyDto.getFiles().forEach(file -> {

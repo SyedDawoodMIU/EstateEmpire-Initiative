@@ -9,7 +9,6 @@ import java.util.List;
 public interface OfferService {
 
 
-    // make offer to property
     OfferDto makeOffer(OfferDto offerDto);
 
     OfferResponseDto acceptOffer(Long id);
@@ -17,8 +16,8 @@ public interface OfferService {
     OfferResponseDto rejectOffer(Long id);
 
 
-   List<OfferResponseDto> getAllOffersByPropertyId(Long id);
+    List<OfferResponseDto> getAllOffersByPropertyId(Long id);
 
-        void deleteOffer(Long id);
+    void deleteOffer(Long id);
 
 }

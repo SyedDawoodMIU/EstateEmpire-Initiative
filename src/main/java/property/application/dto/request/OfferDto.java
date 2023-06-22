@@ -6,5 +6,5 @@ public class OfferDto {
 
     private Double offerPrice;
     private Long propertyId;
-    private Long customerId;
+
 }
