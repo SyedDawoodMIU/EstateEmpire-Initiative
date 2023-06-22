@@ -21,6 +21,7 @@ import property.application.service.OfferService;
 import property.application.util.LoggedinUserUtil;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -39,7 +40,8 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public OfferDto makeOffer(OfferDto offerDto) {
-        Property property = propertyRepository.findById(offerDto.getPropertyId()).orElseThrow(() -> new RuntimeException("Property not found"));
+        Property property = propertyRepository.findById(offerDto.getPropertyId())
+                .orElseThrow(() -> new RuntimeException("Property not found"));
         if (property.getStatus().equals(PropertyStatus.AVAILABLE)) {
             Offer offer = Offer.builder()
                     .offerStatus(OfferStatus.PENDING)
@@ -57,10 +59,11 @@ public class OfferServiceImpl implements OfferService {
 
     public OfferResponseDto acceptOffer(Long id) {
         User user = loggedinUserUtil.getCurrentUser();
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
         Property property = offer.getProperty();
-        if (!property.getOwner().equals(user)){
-           throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Only owner can accept an offer");
+        if (!property.getOwner().equals(user)) {
+            throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Only owner can accept an offer");
         }
         offer.setOfferStatus(OfferStatus.ACCEPTED);
         offerRepository.save(offer);
@@ -71,9 +74,10 @@ public class OfferServiceImpl implements OfferService {
 
     @Override
     public OfferResponseDto rejectOffer(Long id) {
-        Offer offer = offerRepository.findById(id).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
+        Offer offer = offerRepository.findById(id)
+                .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
         Property property = offer.getProperty();
-        if (!offer.getProperty().getOwner().equals(loggedinUserUtil.getCurrentUser())){
+        if (!offer.getProperty().getOwner().equals(loggedinUserUtil.getCurrentUser())) {
             throw new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Only owner can accept an offer");
         }
         if (property.getStatus().equals(PropertyStatus.CONTINGENT)) {
@@ -94,9 +98,10 @@ public class OfferServiceImpl implements OfferService {
     @Override
     public void deleteOffer(Long offerId) {
         User user = loggedinUserUtil.getCurrentUser();
-        Offer offer = offerRepository.findById(offerId).orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new BadRequestException(BaseErrorCode.VALIDATION_FAILED, "Offer not found"));
         Property property = offer.getProperty();
-        if (offer.getProperty().getOwner().equals(user)) {
+        if (offer.getProperty().getOwner().getUserId() == user.getUserId()) {
             offerRepository.delete(offer);
         }
         if (property.getStatus().equals(PropertyStatus.CONTINGENT) ||
@@ -106,4 +111,45 @@ public class OfferServiceImpl implements OfferService {
             offerRepository.delete(offer);
         }
     }
+
+    @Autowired
+    private UserRepo customerRepository;
+
+    @Override
+    public List<OfferResponseDto> getOfferHistoryByUserId(Long customerId) {
+        User customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        List<Offer> offers = offerRepository.findAllByCustomer(customer);
+        return offers.stream()
+                .map(offer -> modelMapper.map(offer, OfferResponseDto.class))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public void downloadReceipt(Long customerId, Long offerId) {
+        User customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Offer offer = offerRepository.findById(offerId)
+                .orElseThrow(() -> new RuntimeException("Offer not found"));
+        // Generate and download the receipt as PDF or Excel
+        // You can implement the logic to generate and download the receipt here
+    }
+
+    @Override
+    public void saveProperty(Long customerId, Long propertyId) {
+        User customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Property property = propertyRepository.findById(propertyId)
+                .orElseThrow(() -> new RuntimeException("Property not found"));
+        customer.getFavoriteProperty().add(property);
+        customerRepository.save(customer);
+    }
+
+    @Override
+    public List<Property> getSavedProperties(Long customerId) {
+        User customer = customerRepository.findById(customerId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        return customer.getFavoriteProperty();
+    }
+
 }

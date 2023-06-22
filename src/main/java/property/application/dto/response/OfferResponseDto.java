@@ -4,7 +4,8 @@ import lombok.Data;
 @Data
 public class OfferResponseDto {
 
+    private Long id;
     private Double offerPrice;
-    private PropertyDto propertyId;
-    private UserDtoResponse customerId;
+    private PropertyDto property;
+    private UserDtoResponse customer;
 }
