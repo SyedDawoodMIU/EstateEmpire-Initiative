@@ -119,7 +119,7 @@ public class OfferServiceImpl implements OfferService {
     public List<OfferResponseDto> getOfferHistoryByUserId(Long customerId) {
         User customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-        List<Offer> offers = offerRepository.findAllByCustomer(customer);
+        List<Offer> offers = offerRepository.findByCustomer(customer);
         return offers.stream()
                 .map(offer -> modelMapper.map(offer, OfferResponseDto.class))
                 .collect(Collectors.toList());
