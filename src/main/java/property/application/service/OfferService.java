@@ -21,7 +21,7 @@ public interface OfferService {
 
     List<OfferResponseDto> getOfferHistoryByUserId(Long customerId);
 
-    void downloadReceipt(Long customerId, Long offerId);
+    byte[] downloadReceipt(Long customerId, Long offerId);
 
     void saveProperty(Long customerId, Long propertyId);
 

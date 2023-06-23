@@ -1,5 +1,13 @@
 package property.application.service.impl;
 
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -67,7 +75,7 @@ public class OfferServiceImpl implements OfferService {
         }
         offer.setOfferStatus(OfferStatus.ACCEPTED);
         offerRepository.save(offer);
-        property.setStatus(PropertyStatus.CONTINGENT);
+        property.setStatus(PropertyStatus.PENDING);
         propertyRepository.save(property);
         return modelMapper.map(offer, OfferResponseDto.class);
     }
@@ -126,13 +134,44 @@ public class OfferServiceImpl implements OfferService {
     }
 
     @Override
-    public void downloadReceipt(Long customerId, Long offerId) {
+    public byte[] downloadReceipt(Long customerId, Long offerId) {
         User customer = customerRepository.findById(customerId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Offer offer = offerRepository.findById(offerId)
                 .orElseThrow(() -> new RuntimeException("Offer not found"));
-        // Generate and download the receipt as PDF or Excel
-        // You can implement the logic to generate and download the receipt here
+
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            // Create a new PDF document and write the receipt content
+            PDDocument document = new PDDocument();
+            PDPage page = new PDPage();
+            document.addPage(page);
+            PDPageContentStream contentStream = new PDPageContentStream(document, page);
+            contentStream.setFont(PDType1Font.HELVETICA_BOLD, 12);
+            contentStream.beginText();
+            contentStream.newLineAtOffset(50, 700);
+            contentStream.showText("Receipt Details:");
+            contentStream.newLine();
+            contentStream.showText("Customer Name: " + customer.getName());
+            contentStream.newLine();
+            contentStream.showText("Offer Price: " + offer.getOfferPrice());
+            contentStream.endText();
+            contentStream.close();
+            document.save(outputStream);
+            document.close();
+
+            // Set the response headers
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "receipt.pdf");
+
+            // Return the PDF file as a byte array
+            return outputStream.toByteArray();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+
+        }
+
     }
 
     @Override

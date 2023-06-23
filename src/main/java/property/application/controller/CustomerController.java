@@ -1,21 +1,18 @@
 package property.application.controller;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import property.application.dto.request.OfferDto;
-import property.application.dto.request.UserDto;
-import property.application.dto.response.LoginResponse;
 import property.application.dto.response.OfferResponseDto;
-import property.application.dto.response.UserDtoResponse;
 import property.application.model.Property;
 import property.application.service.OfferService;
-import property.application.service.UserService;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -35,11 +32,24 @@ public class CustomerController {
     public List<OfferResponseDto> getCurrentOffersByCustomerId(@PathVariable Long customerId) {
         return offerService.getOfferHistoryByUserId(customerId);
     }
-   
 
     @GetMapping("/{customerId}/receipt/{offerId}")
-    public void downloadReceipt(@PathVariable Long customerId, @PathVariable Long offerId) {
-        offerService.downloadReceipt(customerId, offerId);
+    public ResponseEntity<byte[]> downloadReceipt(@PathVariable Long customerId, @PathVariable Long offerId) {
+        byte[] outputStream = offerService.downloadReceipt(customerId, offerId);
+
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDispositionFormData("attachment", "receipt.pdf");
+
+            return ResponseEntity.ok()
+                    .headers(headers)
+                    .body(outputStream);
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle any exceptions that occur during PDF generation
+            return ResponseEntity.status(500).build();
+        }
     }
 
     @PostMapping("/{customerId}/save/{propertyId}")

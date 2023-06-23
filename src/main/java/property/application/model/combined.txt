@@ -1,0 +1,291 @@
+package property.application.model;
+
+
+@Entity
+@Data
+public class Address {
+        @Id
+        @GeneratedValue
+        private Long addressId;
+        private String street;
+        private String city;
+        private String state;
+        private String zipCode;
+        private String country;
+
+
+}
+package property.application.model;
+
+
+
+@MappedSuperclass
+@Data
+@EntityListeners(AuditingEntityListener.class)
+public class AuditEntity implements Serializable {
+
+    @CreatedDate
+    @Column(name = "created_at", updatable = false)
+    private Date createdAt;
+
+    @LastModifiedDate
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
+}
+package property.application.model;
+
+
+
+@Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class Message extends AuditEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long messageID;
+
+
+    private String content;
+
+    @ManyToOne
+    @JoinColumn(name = "sender_id")
+    private User sender;
+
+    @ManyToOne
+    @JoinColumn(name = "receiver_id")
+    private User receiver;
+
+    public Message(User sender, User receiver, String message) {
+        this.sender = sender;
+        this.receiver = receiver;
+        this.content = message;
+    }
+}
+package property.application.model;
+
+
+@Entity
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class Offer extends AuditEntity {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private Double offerPrice;
+    @Enumerated
+    private OfferStatus offerStatus;
+    @ManyToOne
+    private Property property;
+    @ManyToOne
+    private User customer;
+
+}
+package property.application.model;
+
+
+
+@Entity
+@Data
+public class Property extends AuditEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long propertyId;
+
+    @Enumerated(EnumType.STRING)
+    private PropertyType type;
+    @Enumerated(EnumType.STRING)
+    private PropertyStatus status;
+
+
+
+    private int viewCount;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "details_id")
+    private PropertyDetails propertyDetails;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private Address address;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.REMOVE)
+    @JsonBackReference
+    private List<PropertyImage> propertyImage;
+
+    @ManyToOne
+    @JoinColumn(name = "owner_id")
+    private User owner;
+
+    @Transient
+    private Boolean isFavorite;
+
+    @Transient
+    private Boolean isOwner;
+
+    @ManyToMany(mappedBy = "favoriteProperty")
+    private List<User> users;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Property)) return false;
+        Property property = (Property) o;
+        return propertyId != null && property.propertyId != null && propertyId.equals(property.propertyId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(propertyId);
+    }
+
+
+
+}
+package property.application.model;
+
+
+@Entity
+@Data
+public class PropertyDetails {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    private int bedrooms;
+    private int bathrooms;
+    private int lotSize;
+    private Double rentAmount;
+    private Double securityDepositAmount;
+    private int yearBuilt;
+    @Column(length = 1000)
+    private String description;
+
+}
+package property.application.model;
+
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+public class PropertyImage extends AuditEntity {
+
+    @Id
+    @GeneratedValue
+    private Long id;
+
+    private String downloadURL;
+
+    @ManyToOne
+    @JoinColumn(name = "property_id")
+    @JsonManagedReference
+    private Property property;
+
+}
+package property.application.model;
+
+
+@Entity
+@Data
+public class PropertyStatus{
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+    private String status;
+    private boolean isAvailable;
+   @OneToOne
+    @JoinColumn(name = "property_id")
+     private Property property;
+
+}
+package property.application.model;
+
+
+@Entity
+@Data
+public class Review {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+    private String comment;
+    private Integer numberOfStars;
+
+    @ManyToOne()
+    @JsonBackReference
+    @JoinColumn(name = "property_id")
+    private Property property;
+}
+package property.application.model;
+
+
+@Entity
+@Data
+@NoArgsConstructor
+public class Role {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long roleId;
+
+    @Column(unique = true, nullable = false)
+    private String roleName;
+
+    @ManyToMany(mappedBy = "roles" ,fetch = FetchType.EAGER)
+    private List<User> users;
+
+    public Role(String roleName) {
+        this.roleName = roleName;
+    }
+}
+package property.application.model;
+
+
+
+@Entity
+@Data
+@Table(name = "app_user")
+public class User extends AuditEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    Long userId;
+
+    private String name;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(unique = true, nullable = false)
+    private String email;
+
+    private Boolean isDisabled = false;
+
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "app_user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role_id"))
+    private List<Role> roles;
+
+    @ManyToMany(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
+    @JoinTable(name = "favorite_property" , joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "property_id"))
+    private List<Property> favoriteProperty;
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof User)) return false;
+        User user = (User) o;
+        return userId != null && user.userId != null && userId.equals(user.userId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(userId);
+    }
+
+}
+
